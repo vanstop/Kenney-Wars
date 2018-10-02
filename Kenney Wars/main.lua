@@ -12,6 +12,7 @@ function love.load(arg)
   sprites.player2_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_stand.png')
   sprites.player2_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_hold.png')
 
+  --Importa a "classe" player
   require('player')
   --spawnPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
   newPlayer(450, 100, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 2, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
