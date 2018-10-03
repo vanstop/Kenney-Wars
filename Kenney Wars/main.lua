@@ -29,7 +29,6 @@ function love.load(arg)
 
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
   sounds.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/412343__michorvath__sequence-8-bit-music-loop.wav', "stream")
-
   --Inicializa os sprites do jogo
   sprites.player1_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stand.png')
   sprites.player1_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_hold.png')
@@ -39,6 +38,8 @@ function love.load(arg)
   sprites.button_down = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button01.png')
   sprites.button_musicOn = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/musicOn.png')
   sprites.button_musicOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/musicOff.png')
+  sprites.button_soundOn = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOn.png')
+  sprites.button_soundOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOff.png')
   sprites.background_menu = love.graphics.newImage('Assets/Sprites/Background/Samples/colored_talltrees.png')
   --Configura a imagem para poder ser repetida
   sprites.background_menu:setWrap("repeat", "repeat")
@@ -62,8 +63,10 @@ function love.load(arg)
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
   --Button Play
   newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Game"', soundFX[1].sound, "return")
-  --Button Mute
-  newButton(love.graphics.getWidth() - sprites.button_up:getWidth()/3, 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
+  --Button Mute Music
+  newButton(love.graphics.getWidth() - sprites.button_musicOn:getWidth(), 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
+  --Button Mute Audio
+  newButton(love.graphics.getWidth() - sprites.button_soundOn:getWidth(), 15 + sprites.button_musicOn:getHeight(), sprites.button_soundOn:getWidth(), sprites.button_soundOn:getHeight(), sprites.button_soundOn, sprites.button_soundOff, 'SFXMute = not SFXMute', soundFX[1].sound, "n")
 end
 
 
@@ -75,6 +78,7 @@ function love.update(dt)
     --TO DO coisas que são atualizadas durante o menu
     updateButton(buttons[1])
     updateButton(buttons[2])
+    updateButton(buttons[3])
 
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
@@ -107,6 +111,7 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.setFont(buttonFont)
+    love.graphics.draw(buttons[3].currentSprite, buttons[3].x, buttons[3].y)
     love.graphics.draw(buttons[2].currentSprite, buttons[2].x, buttons[2].y)
     love.graphics.draw(buttons[1].currentSprite, buttons[1].x, buttons[1].y)
     --Define a cor principal para preto antes de escrever JOGAR
