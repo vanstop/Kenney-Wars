@@ -2,7 +2,7 @@
 --Agradecimento especial a https://www.kenney.nl/assets pelos assets maravilhosos
 
 function love.load(arg)
-  love.window.setMode(900, 700) --Define o tamanho da tela
+  love.window.setMode(900, 700) --define o tamanho da tela
   love.window.setTitle("Kenney Wars") --Define o tirulo da janela onde o jogo acontece
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
