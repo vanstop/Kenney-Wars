@@ -15,14 +15,20 @@ function love.load(arg)
 
   players = {} --Armazena todos os players do jogo
   buttons = {} --Armazena todos os botões do jogo
-  audios = {} --Armazena todos os audios do jogo
   sprites = {} --Armazena todos os sprites do jogo
+  sounds = {} --Armazena todos os soms do jogo
+  soundFX = {} --Armazena todos os efeitos sonoros do jogo
+  soundsBackground = {} --Armazena todos as musicas de background do jogo
 
-  audios.soundsFX = {} --Armazena todos os efeitos sonoros do jogo
-  audios.soundsBackground = {}--Armazena todos as musicas de background do jogo
+  --Define as variaveis de volume
+  SFXVolume = 1
+  SFXMute = false
+  musicVolume = 1
+  musicMute = false
 
-  audios.soundsFX.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click4.ogg', "static")
-  audios.soundsBackground.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/412343__michorvath__sequence-8-bit-music-loop.wav', "stream")
+
+  sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
+  sounds.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/412343__michorvath__sequence-8-bit-music-loop.wav', "stream")
 
   --Inicializa os sprites do jogo
   sprites.player1_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stand.png')
@@ -31,6 +37,8 @@ function love.load(arg)
   sprites.player2_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_hold.png')
   sprites.button_up = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button00.png')
   sprites.button_down = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button01.png')
+  sprites.button_musicOn = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/musicOn.png')
+  sprites.button_musicOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/musicOff.png')
   sprites.background_menu = love.graphics.newImage('Assets/Sprites/Background/Samples/colored_talltrees.png')
   --Configura a imagem para poder ser repetida
   sprites.background_menu:setWrap("repeat", "repeat")
@@ -39,7 +47,11 @@ function love.load(arg)
   --Importa a "classe" player e a minha biblioteca pessoal
   require('player')
   require('button')
+  require('audio')
   require('myGeneralLibrary')
+
+  newSFX(sounds.click)
+  newMusic(sounds.menu)
 
   --Instancia os players
   --spawnPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
@@ -48,14 +60,21 @@ function love.load(arg)
 
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
-  newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Game"', audios.soundsFX.click)
+  --Button Play
+  newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Game"', soundFX[1].sound, "return")
+  --Button Mute
+  newButton(love.graphics.getWidth() - sprites.button_up:getWidth()/3, 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
 end
 
 
 function love.update(dt)
+  --Estão fora dos GameStates os updates que rodam durante todo o jogo
+  updateAudios()
+
   if gameState == "Menu" then
     --TO DO coisas que são atualizadas durante o menu
     updateButton(buttons[1])
+    updateButton(buttons[2])
 
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
@@ -72,7 +91,7 @@ function love.draw()
     --Desenha o plano de fundo
     love.graphics.draw(sprites.background_menu, sprites.background_quad, 0, 0)
     --Inicia a musica de background
-    audios.soundsBackground.menu:play()
+    soundsBackground[1].sound:play()
 
     love.graphics.setFont(titleFont)
     love.graphics.setColor(0, 0, 0, 1)
@@ -83,11 +102,12 @@ function love.draw()
     --Prepara a font para escrever os creditos
     love.graphics.setColor(math.random(0, 1), math.random(0, 1), math.random(0, 1), 1)
     love.graphics.setFont(gameFont)
-    love.graphics.printf("Programado por: Gabriel de Oliveira Belarmino", 0, love.graphics.getHeight() - 50, love.graphics.getWidth(), "center")
-    love.graphics.printf("Sprites por: https://www.kenney.nl/assets", 0, love.graphics.getHeight() - 25, love.graphics.getWidth(), "center")
+    love.graphics.printf("Created by: Gabriel de Oliveira Belarmino", 0, love.graphics.getHeight() - 50, love.graphics.getWidth(), "center")
+    love.graphics.printf("Special Thanks: https://www.kenney.nl/assets", 0, love.graphics.getHeight() - 25, love.graphics.getWidth(), "center")
     love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.setFont(buttonFont)
+    love.graphics.draw(buttons[2].currentSprite, buttons[2].x, buttons[2].y)
     love.graphics.draw(buttons[1].currentSprite, buttons[1].x, buttons[1].y)
     --Define a cor principal para preto antes de escrever JOGAR
     love.graphics.setColor(0, 0, 0, 1)
