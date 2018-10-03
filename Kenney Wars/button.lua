@@ -1,4 +1,4 @@
-function newButton(x, y, w, h, spriteUp, spriteDown, code)
+function newButton(x, y, w, h, spriteUp, spriteDown, code, sound)
   local button = {}
   button.x = x
   button.y = y
@@ -8,6 +8,7 @@ function newButton(x, y, w, h, spriteUp, spriteDown, code)
   button.sprite_down = spriteDown
   button.currentSprite = spriteUp
   button.code = code
+  button.sound = sound
 
   button.isDown = false
   button.yWhenDown = button.y + 4
@@ -23,6 +24,11 @@ function updateButton(button)
     button.y = button.yWhenDown
     --Verifica se o mouse foi clicado enquanto estava em cima do botão
     if love.mouse.isDown(1) then
+      --Caso o botão tenha um som, ele é executado
+      if button.sound then
+        button.sound:play()
+      end
+      --Le uma string como código
       assert(loadstring(button.code))()
     end
   else
