@@ -2,23 +2,30 @@
 --Agradecimento especial a https://www.kenney.nl/assets pelos assets maravilhosos
 
 function love.load(arg)
-  love.window.setMode(900, 700) --define o tamanho da tela
+  love.window.setMode(900, 700) --Define o tamanho da tela
   love.window.setTitle("Kenney Wars") --Define o tirulo da janela onde o jogo acontece
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  gameState = "Menu" --Variavel para controlar os estados do jogo
-  --GameStates {"Menu", "HighScore", "Game", "GameOver"}
+  gameState = "Game" --Variavel para controlar os estados do jogo
+  --GameStates {"Menu", "HighScore", "Game", "Pause", "GameOver"}
 
   titleFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Rocket Square.ttf', 60)
   gameFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 15)
   buttonFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 25)
 
   players = {} --Armazena todos os players do jogo
+  balls = {} --Armazena as bolas do jogo
   buttons = {} --Armazena todos os botões do jogo
   sprites = {} --Armazena todos os sprites do jogo
   sounds = {} --Armazena todos os soms do jogo
   soundFX = {} --Armazena todos os efeitos sonoros do jogo
   soundsBackground = {} --Armazena todos as musicas de background do jogo
+
+  board = {}
+  board.x = 200
+  board.y = 75
+  board.w = 500
+  board.h = 550
 
   --Define as variaveis de volume
   SFXVolume = 1
@@ -41,6 +48,7 @@ function love.load(arg)
   sprites.button_soundOn = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOn.png')
   sprites.button_soundOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOff.png')
   sprites.background_menu = love.graphics.newImage('Assets/Sprites/Background/Samples/colored_talltrees.png')
+  sprites.ball_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/Balls/Blue/ballBlue_04.png')
   --Configura a imagem para poder ser repetida
   sprites.background_menu:setWrap("repeat", "repeat")
   sprites.background_quad = love.graphics.newQuad(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), sprites.background_menu:getWidth(), sprites.background_menu:getHeight())
@@ -49,15 +57,20 @@ function love.load(arg)
   require('player')
   require('button')
   require('audio')
+  require('ball')
   require('myGeneralLibrary')
 
   newSFX(sounds.click)
   newMusic(sounds.menu)
 
   --Instancia os players
-  --spawnPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
-  newPlayer(450, 100, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 2, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
-  newPlayer(450, 600, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 2, "up", 250, "setas", sprites.player2_hold, sprites.player2_stand)
+  --newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
+  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 2, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
+  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 2, "up", 250, "setas", sprites.player2_hold, sprites.player2_stand)
+
+  --Instancia uma bola
+  --newBall(x, y, w, h, s, speed, sprite)
+  newBall(200, 200, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 100, sprites.ball_blue)
 
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
@@ -86,6 +99,7 @@ function love.update(dt)
     love.graphics.setBackgroundColor(0, 1, 0, 1) --Define a cor do plano de fundo (chão)
     playerUpdate(dt, players[1])
     playerUpdate(dt, players[2])
+    updateBall(dt, balls[1])
   end
 end
 
@@ -123,7 +137,11 @@ function love.draw()
   elseif gameState == "HighScore" then
     --TO DO coisas que são desenhadas durante o highscore
   elseif gameState == "Game" then
+    love.graphics.printf("DEBUG" .. balls[1].direction, buttons[1].x, buttons[1].y + buttons[1].h/2 - buttonFont:getHeight()/2, buttons[1].w, "center")
+
+    love.graphics.rectangle("fill", board.x, board.y, board.w, board.h)
     love.graphics.draw(players[1].sprite_stand, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite_stand, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
+    love.graphics.draw(balls[1].sprite, balls[1].x, balls[1].y, nil, balls[1].s, balls[1].s)
   end
 end
