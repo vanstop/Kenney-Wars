@@ -16,3 +16,12 @@ end
 function AngleTo(looker, target)
   return math.atan2(looker.y - target.y,looker.x - target.x)
 end
+
+function isInside(x, y, w, h, LimitX, LimitY, LimitW, LimitH)
+  --Verificar colisão
+  if x > LimitX and y > LimitY and LimitX+LimitW > x+w and LimitY+LimitH > y+h  then
+    return true
+  else
+    return false
+  end
+end

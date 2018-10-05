@@ -70,7 +70,7 @@ function love.load(arg)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
-  newBall(200, 200, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 100, sprites.ball_blue)
+  newBall(200, 200, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
 
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
