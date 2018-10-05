@@ -11,7 +11,11 @@ function updateControls(controlMode, player, balls)
     player.left = love.keyboard.isDown("a")
     player.right = love.keyboard.isDown("d")
     if love.keyboard.isDown("e") then
-      hold(balls, player)
+      if not player.isHolding then
+        hold(balls, player)
+      else
+        throw(ball, player)
+      end
     end
   elseif controlMode == "Player 2" or controlMode == "setas" then
     player.left = love.keyboard.isDown("left")
@@ -40,6 +44,13 @@ function movePlayer(dt, player)
       player.direction = "left"
     end
   end
+
+  --Define o sprite do personagem de acordo com a nescessidade
+  if player.isHolding then
+    player.sprite = player.sprite_hold
+  else
+    player.sprite = player.sprite_stand
+  end
 end
 
 function rotatePlayer(player)
@@ -62,9 +73,15 @@ function hold(balls, player)
       if b.x < player.x + player.w and b.x + b.w > player.x then
         b.isHold = true
         b.holder = player
+        player.holdedBall = bo
+        player.isHolding = true
       end
     end
   end
+end
+
+function throw(ball, player)
+
 end
 
 function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
@@ -85,6 +102,8 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.isHolding = false
   player.left = false
   player.right = false
+  player.holdedBall = nil
+  player.sprite = player.sprite_stand
 
   table.insert(players, player)
 end

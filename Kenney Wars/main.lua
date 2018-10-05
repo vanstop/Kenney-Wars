@@ -68,8 +68,8 @@ function love.load(arg)
 
   --Instancia os players
   --newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
-  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 1, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
-  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 1, "up", 250, "setas", sprites.player2_hold, sprites.player2_stand)
+  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 1, "down", 250, "setas", sprites.player1_hold, sprites.player1_stand)
+  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 1, "up", 250, "wasd", sprites.player2_hold, sprites.player2_stand)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
@@ -147,8 +147,8 @@ function love.draw()
     love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(board.sprite, board.x, board.y)
-    love.graphics.draw(players[1].sprite_stand, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
-    love.graphics.draw(players[2].sprite_stand, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
+    love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
+    love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
     love.graphics.draw(balls[1].sprite, balls[1].x, balls[1].y, nil, balls[1].s, balls[1].s)
     love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)

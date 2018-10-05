@@ -23,7 +23,16 @@ function updateBall(dt, ball)
   end
 
   if ball.isHold then
-    ball.x = ball.holder.x
+    if ball.holder.left then
+      ball.x = ball.holder.x - ball.w/2 - ball.holder.w / 2 - 10
+      ball.y = ball.holder.y - ball.h/2
+    elseif ball.holder.right then
+      ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
+      ball.y = ball.holder.y - ball.h/2
+    else
+      ball.x = ball.holder.x - ball.w/2
+      ball.y = ball.holder.y - ball.h/2 - ball.holder.h / 2
+    end
   end
 end
 
