@@ -3,7 +3,7 @@
 
 function love.load(arg)
   love.window.setMode(900, 700) --Define o tamanho da tela
-  love.window.setTitle("Kenney Wars") --Define o tirulo da janela onde o jogo acontece
+  love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
   gameState = "Game" --Variavel para controlar os estados do jogo
@@ -20,12 +20,6 @@ function love.load(arg)
   sounds = {} --Armazena todos os soms do jogo
   soundFX = {} --Armazena todos os efeitos sonoros do jogo
   soundsBackground = {} --Armazena todos as musicas de background do jogo
-
-  board = {}
-  board.x = 200
-  board.y = 75
-  board.w = 500
-  board.h = 550
 
   --Define as variaveis de volume
   SFXVolume = 1
@@ -49,9 +43,18 @@ function love.load(arg)
   sprites.button_soundOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOff.png')
   sprites.background_menu = love.graphics.newImage('Assets/Sprites/Background/Samples/colored_talltrees.png')
   sprites.ball_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/Balls/Blue/ballBlue_04.png')
+  sprites.board_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/KenneyWarsBoard.png')
+  sprites.tribune = love.graphics.newImage('Assets/Sprites/Game/PNG/Objects/tribune_full.png')
   --Configura a imagem para poder ser repetida
   sprites.background_menu:setWrap("repeat", "repeat")
   sprites.background_quad = love.graphics.newQuad(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), sprites.background_menu:getWidth(), sprites.background_menu:getHeight())
+
+  board = {}
+  board.x = 200
+  board.y = 75
+  board.w = 500
+  board.h = 550
+  board.sprite = sprites.board_blue
 
   --Importa a "classe" player e a minha biblioteca pessoal
   require('player')
@@ -65,8 +68,8 @@ function love.load(arg)
 
   --Instancia os players
   --newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
-  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 2, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
-  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 2, "up", 250, "setas", sprites.player2_hold, sprites.player2_stand)
+  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 1, "down", 250, "wasd", sprites.player1_hold, sprites.player1_stand)
+  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 1, "up", 250, "setas", sprites.player2_hold, sprites.player2_stand)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
@@ -96,9 +99,9 @@ function love.update(dt)
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
   elseif gameState == "Game" then
-    love.graphics.setBackgroundColor(0, 1, 0, 1) --Define a cor do plano de fundo (chão)
-    playerUpdate(dt, players[1])
-    playerUpdate(dt, players[2])
+    love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
+    playerUpdate(dt, players[1], balls)
+    playerUpdate(dt, players[2], balls)
     updateBall(dt, balls[1])
   end
 end
@@ -137,11 +140,17 @@ function love.draw()
   elseif gameState == "HighScore" then
     --TO DO coisas que são desenhadas durante o highscore
   elseif gameState == "Game" then
-    love.graphics.printf("DEBUG" .. balls[1].direction, buttons[1].x, buttons[1].y + buttons[1].h/2 - buttonFont:getHeight()/2, buttons[1].w, "center")
+    love.graphics.printf("DEBUG: ".. tostring(balls[1].isHold), 0, 0, love.graphics.getWidth(), "center")
 
-    love.graphics.rectangle("fill", board.x, board.y, board.w, board.h)
+
+    love.graphics.setColor(0.45, 0.58, 0.58, 1)
+    love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(board.sprite, board.x, board.y)
     love.graphics.draw(players[1].sprite_stand, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite_stand, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
     love.graphics.draw(balls[1].sprite, balls[1].x, balls[1].y, nil, balls[1].s, balls[1].s)
+    love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
+    love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
   end
 end
