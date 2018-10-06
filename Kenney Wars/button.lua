@@ -50,11 +50,3 @@ end
 function love.mousereleased(x, y, b)
   click = false
 end
-
-function love.keypressed(key, scancode, isrepeat)
-    keyPressed = key
-end
-
-function love.keyreleased(key, scancode, isrepeat)
-    keyPressed = ""
-end

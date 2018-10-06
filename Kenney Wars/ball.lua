@@ -30,6 +30,12 @@ function updateBall(dt, ball)
       ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
       ball.y = ball.holder.y - ball.h/2
     else
+      if ball.holder.throw then
+        debug = "a bola ve que era para ser lançada"
+        ball.direction = ball.holder.rotation
+        ball.isMoving = true
+        ball.isHold = false
+      end
       ball.x = ball.holder.x - ball.w/2
       ball.y = ball.holder.y - ball.h/2 - ball.holder.h / 2
     end

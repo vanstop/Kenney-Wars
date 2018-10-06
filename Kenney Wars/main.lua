@@ -56,6 +56,8 @@ function love.load(arg)
   board.h = 550
   board.sprite = sprites.board_blue
 
+  debug = nil --Variavel para debugs
+
   --Importa a "classe" player e a minha biblioteca pessoal
   require('player')
   require('button')
@@ -140,7 +142,7 @@ function love.draw()
   elseif gameState == "HighScore" then
     --TO DO coisas que são desenhadas durante o highscore
   elseif gameState == "Game" then
-    love.graphics.printf("DEBUG: ".. tostring(balls[1].isHold), 0, 0, love.graphics.getWidth(), "center")
+    love.graphics.printf("DEBUG: ".. tostring(debug), 0, 0, love.graphics.getWidth(), "center")
 
 
     love.graphics.setColor(0.45, 0.58, 0.58, 1)
@@ -153,4 +155,13 @@ function love.draw()
     love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
   end
+end
+
+function love.keypressed(key, scancode, isrepeat)
+    keyPressed = key
+    debug = key
+end
+
+function love.keyreleased(key, scancode, isrepeat)
+    keyPressed = ""
 end

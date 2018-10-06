@@ -13,15 +13,19 @@ function updateControls(controlMode, player, balls)
     if love.keyboard.isDown("e") then
       if not player.isHolding then
         hold(balls, player)
-      else
-        throw(ball, player)
       end
+    elseif player.isHolding then
+      player.throw = true
     end
   elseif controlMode == "Player 2" or controlMode == "setas" then
     player.left = love.keyboard.isDown("left")
     player.right = love.keyboard.isDown("right")
     if love.keyboard.isDown("kp1") then
-      hold(balls, player)
+      if not player.isHolding then
+        hold(balls, player)
+      end
+    elseif player.isHolding then
+      player.throw = true
     end
   end
 end
@@ -80,10 +84,6 @@ function hold(balls, player)
   end
 end
 
-function throw(ball, player)
-
-end
-
 function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
   local player = {}
   player.x = x
@@ -103,6 +103,7 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.left = false
   player.right = false
   player.holdedBall = nil
+  player.throw = false
   player.sprite = player.sprite_stand
 
   table.insert(players, player)
