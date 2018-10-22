@@ -1,8 +1,13 @@
 
 function playerUpdate(dt, player, balls)
-  updateControls(player.controlMode, player, balls)
-  movePlayer(dt, player)
-  rotatePlayer(player)
+  if not player.stuned then
+    updateControls(player.controlMode, player, balls)
+    movePlayer(dt, player)
+    rotatePlayer(player)
+  else
+    love.timer.sleep(player.timeToRecover)
+    player.stuned = false
+  end
 end
 
 function updateControls(controlMode, player, balls)
@@ -15,7 +20,7 @@ function updateControls(controlMode, player, balls)
         hold(balls, player)
       end
     elseif player.isHolding then
-      player.throw = true
+      throw(player)
     end
   elseif controlMode == "Player 2" or controlMode == "setas" then
     player.left = love.keyboard.isDown("left")
@@ -25,7 +30,7 @@ function updateControls(controlMode, player, balls)
         hold(balls, player)
       end
     elseif player.isHolding then
-      player.throw = true
+      throw(player)
     end
   end
 end
@@ -74,14 +79,21 @@ function hold(balls, player)
   --TO DO verifica se esta perto de uma bola então a segura
   for i,b in ipairs(balls) do
     if not b.isMoving and not b.isHold then
-      if b.x < player.x + player.w and b.x + b.w > player.x then
+      if b.x < player.x + player.w and b.x + b.w > player.x and distanceBetween(player.x, player.y, b.x, b.y) < 50 then
         b.isHold = true
         b.holder = player
-        player.holdedBall = bo
+        player.holdedBall = b
         player.isHolding = true
+        player.throw = false
       end
     end
   end
+end
+
+function throw(player)
+  player.throw = true
+  player.holdedBall = nil
+  player.isHolding = false
 end
 
 function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
@@ -104,6 +116,8 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.right = false
   player.holdedBall = nil
   player.throw = false
+  player.stuned = false
+  player.timeToRecover = 0
   player.sprite = player.sprite_stand
 
   table.insert(players, player)

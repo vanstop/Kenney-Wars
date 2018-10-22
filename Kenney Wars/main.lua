@@ -23,9 +23,9 @@ function love.load(arg)
 
   --Define as variaveis de volume
   SFXVolume = 1
-  SFXMute = false
+  SFXMute = true
   musicVolume = 1
-  musicMute = false
+  musicMute = true
 
 
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
@@ -142,9 +142,6 @@ function love.draw()
   elseif gameState == "HighScore" then
     --TO DO coisas que são desenhadas durante o highscore
   elseif gameState == "Game" then
-    love.graphics.printf("DEBUG: ".. tostring(debug), 0, 0, love.graphics.getWidth(), "center")
-
-
     love.graphics.setColor(0.45, 0.58, 0.58, 1)
     love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
     love.graphics.setColor(1, 1, 1, 1)
@@ -154,6 +151,8 @@ function love.draw()
     love.graphics.draw(balls[1].sprite, balls[1].x, balls[1].y, nil, balls[1].s, balls[1].s)
     love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
+
+    love.graphics.printf("DEBUG: ".. tostring(debug), 0, 0, love.graphics.getWidth(), "center")
   end
 end
 
