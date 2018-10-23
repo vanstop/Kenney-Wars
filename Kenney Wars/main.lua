@@ -45,6 +45,7 @@ function love.load(arg)
   sprites.button_soundOff = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/audioOff.png')
   sprites.background_menu = love.graphics.newImage('Assets/Sprites/Background/Samples/colored_talltrees.png')
   sprites.ball_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/Balls/Blue/ballBlue_04.png')
+  sprites.ball_yellow = love.graphics.newImage('Assets/Sprites/Game/PNG/Balls/Yellow/ballYellow_04.png')
   sprites.board_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/KenneyWarsBoard.png')
   sprites.tribune = love.graphics.newImage('Assets/Sprites/Game/PNG/Objects/tribune_full.png')
   --Configura a imagem para poder ser repetida
@@ -77,8 +78,10 @@ function love.load(arg)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
-  newBall(200, 200, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
-
+  for i = 1, 5 do
+    newBall(125 + i * 100, board.h + 80, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
+    newBall(125 + i * 100, 25, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_yellow)
+  end
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
   --Button Play
@@ -106,7 +109,9 @@ function love.update(dt)
     love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
     playerUpdate(dt, players[1], balls)
     playerUpdate(dt, players[2], balls)
-    updateBall(dt, balls[1], players)
+    for i = 1, 10 do
+      updateBall(dt, balls[i], players)
+    end
   end
 end
 
@@ -148,9 +153,14 @@ function love.draw()
     love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(board.sprite, board.x, board.y)
+
+    --Desenha todas as bolas criadas
+    for i = 1, 10 do
+      love.graphics.draw(balls[i].sprite, balls[i].x, balls[i].y, nil, balls[i].s, balls[i].s)
+    end
+
     love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
-    love.graphics.draw(balls[1].sprite, balls[1].x, balls[1].y, nil, balls[1].s, balls[1].s)
     love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
 
@@ -160,7 +170,6 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     keyPressed = key
-    debug = key
 end
 
 function love.keyreleased(key, scancode, isrepeat)

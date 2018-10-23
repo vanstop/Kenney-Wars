@@ -5,63 +5,73 @@ function newBall(x, y, w, h, s, speed, sprite)
   ball.w = w
   ball.h = h
   ball.s = s
+  ball.speed = speed
   ball.speedX = speed
   ball.speedY = speed
   ball.sprite = sprite
 
   ball.direction = math.rad(45)
   ball.holder = nil
-  ball.isMoving = true
+  ball.isMoving = false
   ball.isHold = false
 
   table.insert(balls, ball)
 end
 
 function updateBall(dt, ball, players)
+  debug = ball.direction
   if ball.isMoving then
     moveBall(dt, ball)
     for i, p in ipairs(players) do
       if distanceBetween(p.x, p.y, ball.x + (ball.w/2), ball.y + (ball.h/2)) < 35 then
         p.stuned = true
-        debug = "Stun"
       end
     end
   end
 
   if ball.isHold then
     if ball.holder.directionDefault == "up" then
-      if ball.holder.left then
+      if ball.holder.direction == "left" then
         ball.x = ball.holder.x - ball.w/2 - ball.holder.w / 2 - 10
         ball.y = ball.holder.y - ball.h/2
-      elseif ball.holder.right then
+        ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = -ball.speed
+      elseif ball.holder.direction == "right" then
         ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
         ball.y = ball.holder.y - ball.h/2
+        ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = ball.speed
       else
-        if ball.holder.throw then
-          debug = "a bola ve que era para ser lançada"
-          ball.direction = ball.holder.rotation
-          ball.isMoving = true
-          ball.isHold = false
-        end
         ball.x = ball.holder.x - ball.w/2
         ball.y = ball.holder.y - ball.h/2 - ball.holder.h / 2
+        ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
       end
+
+      if ball.holder.throw then
+        ball.isMoving = true
+        ball.isHold = false
+      end
+
     elseif ball.holder.directionDefault == "down" then
-      if ball.holder.left then
+      if ball.holder.direction == "left" then
         ball.x = ball.holder.x - ball.w/2 - ball.holder.w / 2 - 10
         ball.y = ball.holder.y - ball.h/2
-      elseif ball.holder.right then
+        ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = - ball.speed
+      elseif ball.holder.direction == "right" then
         ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
         ball.y = ball.holder.y - ball.h/2
+        ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = ball.speed
       else
-        if ball.holder.throw then
-          debug = "a bola ve que era para ser lançada"
-          ball.direction = ball.holder.rotation
-          ball.isMoving = true
-          ball.isHold = false
-        end
         ball.x = ball.holder.x - ball.w/2
         ball.y = ball.holder.y + ball.h/2
+        ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
+      end
+
+      if ball.holder.throw then
+        ball.isMoving = true
+        ball.isHold = false
       end
     end
   end

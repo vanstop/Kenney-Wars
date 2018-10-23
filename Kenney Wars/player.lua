@@ -18,7 +18,7 @@ function updateControls(controlMode, player, balls)
   if controlMode == "Player 1" or controlMode == "wasd" then
     player.left = love.keyboard.isDown("a")
     player.right = love.keyboard.isDown("d")
-    if love.keyboard.isDown("e") then
+    if love.keyboard.isDown("space") then
       if not player.isHolding then
         hold(balls, player)
       end
