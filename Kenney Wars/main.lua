@@ -32,8 +32,10 @@ function love.load(arg)
   sounds.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/412343__michorvath__sequence-8-bit-music-loop.wav', "stream")
   --Inicializa os sprites do jogo
   sprites.player1_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stand.png')
+  sprites.player1_stuned = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stuned.png')
   sprites.player1_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_hold.png')
   sprites.player2_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_stand.png')
+  sprites.player2_stuned = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_stuned.png')
   sprites.player2_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_hold.png')
   sprites.button_up = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button00.png')
   sprites.button_down = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button01.png')
@@ -70,8 +72,8 @@ function love.load(arg)
 
   --Instancia os players
   --newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
-  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 1, "down", 250, "setas", sprites.player1_hold, sprites.player1_stand)
-  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 1, "up", 250, "wasd", sprites.player2_hold, sprites.player2_stand)
+  newPlayer(450, 50, sprites.player1_hold:getWidth(), sprites.player1_hold:getHeight(), 1, "down", 250, "setas", sprites.player1_hold, sprites.player1_stand, sprites.player1_stuned)
+  newPlayer(450, 650, sprites.player1_hold:getWidth(), sprites.player2_hold:getHeight(), 1, "up", 250, "wasd", sprites.player2_hold, sprites.player2_stand, sprites.player2_stuned)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
@@ -104,7 +106,7 @@ function love.update(dt)
     love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
     playerUpdate(dt, players[1], balls)
     playerUpdate(dt, players[2], balls)
-    updateBall(dt, balls[1])
+    updateBall(dt, balls[1], players)
   end
 end
 

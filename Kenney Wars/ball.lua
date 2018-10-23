@@ -17,9 +17,15 @@ function newBall(x, y, w, h, s, speed, sprite)
   table.insert(balls, ball)
 end
 
-function updateBall(dt, ball)
+function updateBall(dt, ball, players)
   if ball.isMoving then
     moveBall(dt, ball)
+    for i, p in ipairs(players) do
+      if distanceBetween(p.x, p.y, ball.x + (ball.w/2), ball.y + (ball.h/2)) < 35 then
+        p.stuned = true
+        debug = "Stun"
+      end
+    end
   end
 
   if ball.isHold then

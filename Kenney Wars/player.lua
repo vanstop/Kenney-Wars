@@ -4,9 +4,12 @@ function playerUpdate(dt, player, balls)
     updateControls(player.controlMode, player, balls)
     movePlayer(dt, player)
     rotatePlayer(player)
-  else
-    love.timer.sleep(player.timeToRecover)
+  elseif player.timeToRecover <= 0 then
     player.stuned = false
+    player.timeToRecover = 1
+  else
+    player.sprite = player.sprite_stuned
+    player.timeToRecover = player.timeToRecover - love.timer.getDelta()
   end
 end
 
@@ -79,7 +82,7 @@ function hold(balls, player)
   --TO DO verifica se esta perto de uma bola então a segura
   for i,b in ipairs(balls) do
     if not b.isMoving and not b.isHold then
-      if b.x < player.x + player.w and b.x + b.w > player.x and distanceBetween(player.x, player.y, b.x, b.y) < 50 then
+      if b.x + (b.w/2) < player.x + player.w / 2 and b.x + (b.w/2) > player.x - player.h / 2 and distanceBetween(player.x, player.y, b.x + (b.w/2), b.y + (b.h/2)) < 50 then
         b.isHold = true
         b.holder = player
         player.holdedBall = b
@@ -96,7 +99,7 @@ function throw(player)
   player.isHolding = false
 end
 
-function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
+function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand, spriteStuned)
   local player = {}
   player.x = x
   player.y = y
@@ -107,6 +110,7 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.controlMode = controlMode
   player.sprite_hold = spriteHold
   player.sprite_stand = spriteStand
+  player.sprite_stuned = spriteStuned
   player.directionDefault = d
 
   player.direction = player.directionDefault
@@ -117,7 +121,7 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.holdedBall = nil
   player.throw = false
   player.stuned = false
-  player.timeToRecover = 0
+  player.timeToRecover = 1
   player.sprite = player.sprite_stand
 
   table.insert(players, player)
