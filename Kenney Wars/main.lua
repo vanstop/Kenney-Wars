@@ -6,7 +6,7 @@ function love.load(arg)
   love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  gameState = "Game" --Variavel para controlar os estados do jogo
+  gameState = "Menu" --Variavel para controlar os estados do jogo
   --GameStates {"Menu", "HighScore", "Game", "Pause", "GameOver"}
 
   titleFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Rocket Square.ttf', 60)

@@ -44,13 +44,13 @@ function movePlayer(dt, player)
     --rotaciona o personagem para frente
     player.direction = player.directionDefault
   else
-    if player.right then
+    if player.right and player.x < (board.x + board.w) - player.h/2 then
       --move e rotaciona para a direita
       player.x = player.x + player.speed * dt
       player.direction = "right"
     end
 
-    if player.left then
+    if player.left and player.x > board.x + player.h/2 then
       --move e rotaciona para a esquerda
       player.x = player.x - player.speed * dt
       player.direction = "left"
@@ -88,6 +88,7 @@ function hold(balls, player)
         player.holdedBall = b
         player.isHolding = true
         player.throw = false
+        break
       end
     end
   end
