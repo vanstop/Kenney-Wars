@@ -2,15 +2,25 @@
 --Agradecimento especial a https://www.kenney.nl/assets pelos assets maravilhosos
 
 function love.load(arg)
-  love.window.setMode(900, 700) --Define o tamanho da tela
-  love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
+
+  debugMode = true
+
+  if debugMode then
+    love.window.setMode(1500, 700) --Define o tamanho da tela para suportar o debug mode
+    love.window.setTitle("♠ DEBUG MODE ♠") --Define o tirulo da janela onde o jogo acontece
+  else
+    love.window.setMode(900, 700) --Define o tamanho da tela
+    love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
+  end
 
   gameState = "Menu" --Variavel para controlar os estados do jogo
   --GameStates {"Menu", "HighScore", "Game", "Pause", "GameOver"}
 
+  --Fonts utilizadas em jogo
   titleFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Rocket Square.ttf', 60)
   gameFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 15)
+  debugFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 15)
   buttonFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 25)
 
   players = {} --Armazena todos os players do jogo
@@ -23,7 +33,7 @@ function love.load(arg)
 
   --Define as variaveis de volume
   SFXVolume = 1
-  SFXMute = true
+  SFXMute = false
   musicVolume = 1
   musicMute = true
 
@@ -58,8 +68,6 @@ function love.load(arg)
   board.w = 500
   board.h = 550
   board.sprite = sprites.board_blue
-
-  debug = nil --Variavel para debugs
 
   --Importa a "classe" player e a minha biblioteca pessoal
   require('player')
@@ -110,7 +118,7 @@ function love.update(dt)
     playerUpdate(dt, players[1], balls)
     playerUpdate(dt, players[2], balls)
     for i = 1, 10 do
-      updateBall(dt, balls[i], players)
+      updateBall(dt, balls[i], players, balls)
     end
   end
 end
@@ -151,20 +159,25 @@ function love.draw()
   elseif gameState == "Game" then
     love.graphics.setColor(0.45, 0.58, 0.58, 1)
     love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
+    love.graphics.rectangle("fill", board.x + 825, board.y -60 , board.w, board.h + 120)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(board.sprite, board.x, board.y)
+
+    love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
+    love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
 
     --Desenha todas as bolas criadas
     for i = 1, 10 do
       love.graphics.draw(balls[i].sprite, balls[i].x, balls[i].y, nil, balls[i].s, balls[i].s)
+      love.graphics.setFont(debugFont)
+      love.graphics.setColor(0, 0, 0, 1)
+      love.graphics.printf("Ball"..i.. " X: "..math.ceil(balls[i].x).. " Y: "..math.ceil(balls[i].y).. " moving: "..tostring(balls[i].isMoving).. " overlapping: "..tostring(balls[i].isOverlapping), 1050, 50 + i * 50, love.graphics.getWidth(), "left")
+      love.graphics.setFont(gameFont)
+      love.graphics.setColor(1, 1, 1, 1)
     end
 
     love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
-    love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
-    love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
-
-    love.graphics.printf("DEBUG: ".. tostring(debug), 0, 0, love.graphics.getWidth(), "center")
   end
 end
 

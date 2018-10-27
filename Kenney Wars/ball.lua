@@ -14,12 +14,12 @@ function newBall(x, y, w, h, s, speed, sprite)
   ball.holder = nil
   ball.isMoving = false
   ball.isHold = false
+  ball.isOverlapping = false
 
   table.insert(balls, ball)
 end
 
-function updateBall(dt, ball, players)
-  debug = ball.direction
+function updateBall(dt, ball, players, balls)
   if ball.isMoving then
     moveBall(dt, ball)
     for i, p in ipairs(players) do
@@ -27,6 +27,8 @@ function updateBall(dt, ball, players)
         p.stuned = true
       end
     end
+  else
+    ifOverlaping(ball, balls)
   end
 
   if ball.isHold then
@@ -84,6 +86,19 @@ function moveBall(dt, ball)
   --Rebate a bola
   ThisifOnEdgeBounce(ball, board.x, board.y, board.w, board.h)
   --ball.direction = (2*(ball.direction)) - ((ball.direction) - 180)
+end
+
+function ifOverlaping(ball, balls)
+  for i,b in ipairs(balls) do
+    if b ~= ball then
+      if pointIsInside(b, ball.x + (ball.w/2), ball.y + (ball.h/2)) then
+        ball.isOverlapping = true
+        break
+      else
+        ball.isOverlapping = false
+      end
+    end
+  end
 end
 
 function ThisifOnEdgeBounce(ball, LimitX, LimitY, LimitW, LimitH)
