@@ -15,37 +15,48 @@ function newBall(x, y, w, h, s, speed, sprite)
   ball.isMoving = false
   ball.isHold = false
   ball.isOverlapping = false
+  ball.directionToAvoid = 0.1 --Positive to right and Negative to left, the value sets the speed
 
   table.insert(balls, ball)
 end
 
 function updateBall(dt, ball, players, balls)
+  if ball.isOverlapping then
+    ball.x = ball.x + ball.directionToAvoid * ball.speed * dt
+  end
   if ball.isMoving then
     moveBall(dt, ball)
     for i, p in ipairs(players) do
-      if distanceBetween(p.x, p.y, ball.x + (ball.w/2), ball.y + (ball.h/2)) < 35 then
+      if distanceBetween(p.x, p.y, ball.x, ball.y) < 35 then
         p.stuned = true
       end
     end
   else
-    ifOverlaping(ball, balls)
+    if not ball.isHold then
+      ifOverlaping(ball, balls)
+      if ball.x - ball.w/2 < board.x then
+        ball.x = board.x + ball.w/2
+      elseif board.x + board.w < ball.x + ball.w/2 then
+        ball.x = board.x + board.w - ball.w/2
+      end
+    end
   end
 
   if ball.isHold then
     if ball.holder.directionDefault == "up" then
       if ball.holder.direction == "left" then
-        ball.x = ball.holder.x - ball.w/2 - ball.holder.w / 2 - 10
-        ball.y = ball.holder.y - ball.h/2
+        ball.x = ball.holder.x - ball.w
+        ball.y = ball.holder.y
         ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = -ball.speed
       elseif ball.holder.direction == "right" then
-        ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
-        ball.y = ball.holder.y - ball.h/2
+        ball.x = ball.holder.x + ball.w
+        ball.y = ball.holder.y
         ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = ball.speed
       else
-        ball.x = ball.holder.x - ball.w/2
-        ball.y = ball.holder.y - ball.h/2 - ball.holder.h / 2
+        ball.x = ball.holder.x
+        ball.y = ball.holder.y - ball.h
         ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
       end
 
@@ -56,18 +67,18 @@ function updateBall(dt, ball, players, balls)
 
     elseif ball.holder.directionDefault == "down" then
       if ball.holder.direction == "left" then
-        ball.x = ball.holder.x - ball.w/2 - ball.holder.w / 2 - 10
-        ball.y = ball.holder.y - ball.h/2
+        ball.x = ball.holder.x - ball.w
+        ball.y = ball.holder.y
         ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = - ball.speed
       elseif ball.holder.direction == "right" then
-        ball.x = ball.holder.x - ball.w/2 + ball.holder.w / 2 + 10
-        ball.y = ball.holder.y - ball.h/2
+        ball.x = ball.holder.x + ball.w
+        ball.y = ball.holder.y
         ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = ball.speed
       else
-        ball.x = ball.holder.x - ball.w/2
-        ball.y = ball.holder.y + ball.h/2
+        ball.x = ball.holder.x
+        ball.y = ball.holder.y + ball.h
         ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
       end
 
@@ -85,14 +96,18 @@ function moveBall(dt, ball)
   ball.y = ball.y + math.sin(ball.direction) * ball.speedY * dt
   --Rebate a bola
   ThisifOnEdgeBounce(ball, board.x, board.y, board.w, board.h)
-  --ball.direction = (2*(ball.direction)) - ((ball.direction) - 180)
 end
 
 function ifOverlaping(ball, balls)
   for i,b in ipairs(balls) do
-    if b ~= ball then
-      if pointIsInside(b, ball.x + (ball.w/2), ball.y + (ball.h/2)) then
+    if b ~= ball and not b.isHold then
+      if distanceBetween(b.x, b.y, ball.x, ball.y) < ball.w then
         ball.isOverlapping = true
+        if ball.x < b.x then
+          ball.directionToAvoid = -0.1
+        else
+          ball.directionToAvoid = 0.1
+        end
         break
       else
         ball.isOverlapping = false
@@ -103,15 +118,15 @@ end
 
 function ThisifOnEdgeBounce(ball, LimitX, LimitY, LimitW, LimitH)
   --Verificar colisão
-  if ball.y < LimitY - 50 or LimitY + LimitH + 50 < ball.y + ball.h  then
+  if ball.y < LimitY - ball.h/2 or LimitY + LimitH + ball.h/2 < ball.y then
       ball.isMoving = false
   end
 
-  if ball.x < LimitX then
+  if ball.x - ball.w/2 < LimitX then
     ball.speedX = - ball.speedX
-    ball.x = LimitX
-  elseif LimitX+LimitW < ball.x + ball.w then
+    ball.x = LimitX + ball.w/2
+  elseif LimitX+LimitW < ball.x + ball.w/2 then
     ball.speedX = - ball.speedX
-    ball.x = LimitX+LimitW - ball.w
+    ball.x = LimitX+LimitW - ball.w/2
   end
 end

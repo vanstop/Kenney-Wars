@@ -86,9 +86,11 @@ function love.load(arg)
 
   --Instancia uma bola
   --newBall(x, y, w, h, s, speed, sprite)
+  --Distancia entre as bolas dentro do board
+  spaceBetweenBalls = (board.w - sprites.ball_blue:getWidth()*5)/6
   for i = 1, 5 do
-    newBall(125 + i * 100, board.h + 80, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
-    newBall(125 + i * 100, 25, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_yellow)
+    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.h + board.y + 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
+    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.y - 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_yellow)
   end
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
@@ -167,8 +169,9 @@ function love.draw()
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
 
     --Desenha todas as bolas criadas
+    --love.graphics.draw(drawable, x, y, r, sx, sy, ox, oy, kx, ky)
     for i = 1, 10 do
-      love.graphics.draw(balls[i].sprite, balls[i].x, balls[i].y, nil, balls[i].s, balls[i].s)
+      love.graphics.draw(balls[i].sprite, balls[i].x, balls[i].y, nil, balls[i].s, balls[i].s, balls[i].w/2, balls[i].h/2)
       love.graphics.setFont(debugFont)
       love.graphics.setColor(0, 0, 0, 1)
       love.graphics.printf("Ball"..i.. " X: "..math.ceil(balls[i].x).. " Y: "..math.ceil(balls[i].y).. " moving: "..tostring(balls[i].isMoving).. " overlapping: "..tostring(balls[i].isOverlapping), 1050, 50 + i * 50, love.graphics.getWidth(), "left")
