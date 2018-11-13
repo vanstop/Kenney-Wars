@@ -82,7 +82,7 @@ function hold(balls, player)
   --TO DO verifica se esta perto de uma bola então a segura
   for i,b in ipairs(balls) do
     if not b.isMoving and not b.isHold then
-      if b.x + (b.w/2) < player.x + player.w / 2 and b.x + (b.w/2) > player.x - player.h / 2 and distanceBetween(player.x, player.y, b.x + (b.w/2), b.y + (b.h/2)) < 50 then
+      if b.x < player.x + player.w / 2 and b.x > player.x - player.h / 2 and distanceBetween(player.x, player.y, b.x, b.y) < 50 then
         b.isHold = true
         b.holder = player
         player.holdedBall = b

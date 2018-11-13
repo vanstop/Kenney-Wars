@@ -25,7 +25,10 @@ function updateBall(dt, ball, players, balls)
     ball.x = ball.x + ball.directionToAvoid * ball.speed * dt
   end
   if ball.isMoving then
-    moveBall(dt, ball)
+    --Função que move a bola
+    moveBall(dt, ball, balls)
+
+    --Verifica se colidiu com algum player para stuna-lo
     for i, p in ipairs(players) do
       if distanceBetween(p.x, p.y, ball.x, ball.y) < 35 then
         p.stuned = true
@@ -47,16 +50,19 @@ function updateBall(dt, ball, players, balls)
       if ball.holder.direction == "left" then
         ball.x = ball.holder.x - ball.w
         ball.y = ball.holder.y
-        ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
-        ball.speedX = -ball.speed
+        ball.direction = math.rad(225) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = ball.speed
+        ball.speedY = ball.speed
       elseif ball.holder.direction == "right" then
         ball.x = ball.holder.x + ball.w
         ball.y = ball.holder.y
-        ball.direction = math.rad(-45) --Define a rotacao da bola com base na rotacao do player
+        ball.direction = math.rad(315) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = ball.speed
+        ball.speedY = ball.speed
       else
         ball.x = ball.holder.x
         ball.y = ball.holder.y - ball.h
+        ball.speedY = ball.speed
         ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
       end
 
@@ -69,16 +75,19 @@ function updateBall(dt, ball, players, balls)
       if ball.holder.direction == "left" then
         ball.x = ball.holder.x - ball.w
         ball.y = ball.holder.y
-        ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
-        ball.speedX = - ball.speed
+        ball.direction = math.rad(135) --Define a rotacao da bola com base na rotacao do player
+        ball.speedX = ball.speed
+        ball.speedY = ball.speed
       elseif ball.holder.direction == "right" then
         ball.x = ball.holder.x + ball.w
         ball.y = ball.holder.y
         ball.direction = math.rad(45) --Define a rotacao da bola com base na rotacao do player
         ball.speedX = ball.speed
+        ball.speedY = ball.speed
       else
         ball.x = ball.holder.x
         ball.y = ball.holder.y + ball.h
+        ball.speedY = ball.speed
         ball.direction = ball.holder.rotation --Define a rotacao da bola com base na rotacao do player
       end
 
@@ -90,7 +99,9 @@ function updateBall(dt, ball, players, balls)
   end
 end
 
-function moveBall(dt, ball)
+function moveBall(dt, ball, balls)
+  --Verifica se colidiu com alguma bola para rebater
+  IfCollideBounce(ball, balls);
   --Usa seno e coseno do angulo de direção da bola para mover corretamente tanto no eixo X como no Y
   ball.x = ball.x + math.cos(ball.direction) * ball.speedX * dt
   ball.y = ball.y + math.sin(ball.direction) * ball.speedY * dt
@@ -117,11 +128,15 @@ function ifOverlaping(ball, balls)
 end
 
 function ThisifOnEdgeBounce(ball, LimitX, LimitY, LimitW, LimitH)
-  --Verificar colisão
-  if ball.y < LimitY - ball.h/2 or LimitY + LimitH + ball.h/2 < ball.y then
+  --Caso chege no topo ou na base, para e não rebate.
+  if ball.y < LimitY - ball.h/2 - 10 then --10 é um valor de folga para garantir que a bola sempre que lançada se move até o outro lado da tela
       ball.isMoving = false
+      ball.y = LimitY - 30; --Snap das bolas no eixo Y
+  elseif 10 + LimitY + LimitH + ball.h/2 < ball.y then
+      ball.isMoving = false
+      ball.y = LimitY + LimitH + 30;
   end
-
+  --Caso toque nas bordas a bola rebate
   if ball.x - ball.w/2 < LimitX then
     ball.speedX = - ball.speedX
     ball.x = LimitX + ball.w/2
@@ -129,4 +144,22 @@ function ThisifOnEdgeBounce(ball, LimitX, LimitY, LimitW, LimitH)
     ball.speedX = - ball.speedX
     ball.x = LimitX+LimitW - ball.w/2
   end
+end
+
+function IfCollideBounce(ball, balls)
+  for i, b in ipairs(balls) do
+    if distanceBetween(ball.x, ball.y, b.x, b.y) <= b.w then --Verifica se colidiu
+      if b ~= ball and b.isMoving then --Verifica se a outra bola tambem esta se movendo
+
+        --angleBetween(obj1, obj2)
+        b.direction = angleBetween(b, ball)
+        ball.direction = angleBetween(ball, b)
+        
+      end
+    end
+  end
+end
+
+function angleBetween(obj1, obj2)
+  return math.atan2(obj1.y - obj2.y, obj1.x - obj2.x)
 end

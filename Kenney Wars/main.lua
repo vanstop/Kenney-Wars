@@ -35,7 +35,7 @@ function love.load(arg)
   SFXVolume = 1
   SFXMute = false
   musicVolume = 1
-  musicMute = true
+  musicMute = false
 
 
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
@@ -89,8 +89,8 @@ function love.load(arg)
   --Distancia entre as bolas dentro do board
   spaceBetweenBalls = (board.w - sprites.ball_blue:getWidth()*5)/6
   for i = 1, 5 do
-    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.h + board.y + 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_blue)
-    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.y - 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 500, sprites.ball_yellow)
+    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.h + board.y + 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 250, sprites.ball_blue)
+    newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.y - 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 250, sprites.ball_yellow)
   end
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
