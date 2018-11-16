@@ -4,7 +4,7 @@
 function love.load(arg)
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  debugMode = true
+  debugMode = false
 
   if debugMode then
     love.window.setMode(1500, 700) --Define o tamanho da tela para suportar o debug mode
@@ -14,7 +14,8 @@ function love.load(arg)
     love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   end
 
-  gameState = "Menu" --Variavel para controlar os estados do jogo
+  gameState = "Game" --Variavel para controlar os estados do jogo
+
   --GameStates {"Menu", "HighScore", "Game", "Pause", "GameOver"}
 
   --Fonts utilizadas em jogo
@@ -36,6 +37,9 @@ function love.load(arg)
   SFXMute = false
   musicVolume = 1
   musicMute = false
+
+  --Define as variaveis de controle
+  pause = false
 
 
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
@@ -74,6 +78,7 @@ function love.load(arg)
   require('button')
   require('audio')
   require('ball')
+  require('pause')
   require('myGeneralLibrary')
 
   newSFX(sounds.click)
@@ -115,12 +120,21 @@ function love.update(dt)
 
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
+  elseif gameState == "Pause" then
+    --Pause do jogo
+    pauseUpdate(dt)
   elseif gameState == "Game" then
     love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
     playerUpdate(dt, players[1], balls)
     playerUpdate(dt, players[2], balls)
     for i = 1, 10 do
       updateBall(dt, balls[i], players, balls)
+    end
+
+    if pause then
+      gameState = "Pause"
+    else
+      gameState = "Game"
     end
   end
 end
@@ -158,7 +172,7 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
   elseif gameState == "HighScore" then
     --TO DO coisas que são desenhadas durante o highscore
-  elseif gameState == "Game" then
+  elseif gameState == "Game" or gameState == "Pause" then
     love.graphics.setColor(0.45, 0.58, 0.58, 1)
     love.graphics.rectangle("fill", board.x, board.y -60 , board.w, board.h + 120)
     love.graphics.rectangle("fill", board.x + 825, board.y -60 , board.w, board.h + 120)
@@ -182,12 +196,22 @@ function love.draw()
     love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
   end
+
+  if gameState == "Pause" then
+    --Pausar o jogo
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.rectangle("fill", love.graphics.getWidth()/2 - 35, love.graphics.getHeight()/2 - 10, 70, 20)
+    love.graphics.setFont(gameFont)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("Pause", love.graphics.getWidth()/2 - 25,  love.graphics.getHeight()/2 - 10)
+  end
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    keyPressed = key
+  if key == "escape" then pause = not pause end
+  keyPressed = key
 end
 
 function love.keyreleased(key, scancode, isrepeat)
-    keyPressed = ""
+  keyPressed = ""
 end
