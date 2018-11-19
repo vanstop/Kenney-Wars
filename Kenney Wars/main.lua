@@ -4,18 +4,20 @@
 function love.load(arg)
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  debugMode = true
+  debugMode = false
 
   if debugMode then
-    love.window.setMode(1500, 700) --Define o tamanho da tela para suportar o debug mode
+    love.window.setMode(1500, 700, {resizable=true}) --Define o tamanho da tela para suportar o debug mode
     love.window.setTitle("♠ DEBUG MODE ♠") --Define o tirulo da janela onde o jogo acontece
   else
-    love.window.setMode(900, 700) --Define o tamanho da tela
+    love.window.setMode(900, 700, {resizable=false}) --Define o tamanho da tela
     love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   end
 
   gameState = "Menu" --Variavel para controlar os estados do jogo
   --GameStates {"Menu", "HighScore", "Game", "Pause", "GameOver"}
+  gameSubState = "Playing" --Variavel para controlar os sub estados do estado GameOver
+  -- SubStates {"Playing", "Paused"}
 
   --Fonts utilizadas em jogo
   titleFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Rocket Square.ttf', 60)
@@ -24,6 +26,7 @@ function love.load(arg)
   buttonFont = love.graphics.newFont('Assets/Fonts/Fonts/Kenney Mini Square.ttf', 25)
 
   players = {} --Armazena todos os players do jogo
+  matchs = {} --Armazena todas as partidas do jogo
   balls = {} --Armazena as bolas do jogo
   buttons = {} --Armazena todos os botões do jogo
   sprites = {} --Armazena todos os sprites do jogo
@@ -71,6 +74,7 @@ function love.load(arg)
 
   --Importa a "classe" player e a minha biblioteca pessoal
   require('player')
+  require('match')
   require('button')
   require('audio')
   require('ball')
@@ -92,14 +96,19 @@ function love.load(arg)
     newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.h + board.y + 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 250, sprites.ball_blue)
     newBall((spaceBetweenBalls * i) + sprites.ball_blue:getWidth()/2 + (sprites.ball_blue:getWidth()) * (i-1) + board.x, board.y - 30, sprites.ball_blue:getWidth(), sprites.ball_blue:getHeight(), 1, 250, sprites.ball_yellow)
   end
+
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
   --Button Play
-  newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Game"', soundFX[1].sound, "return")
+  newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'StartGame()', soundFX[1].sound, "return")
   --Button Mute Music
   newButton(love.graphics.getWidth() - sprites.button_musicOn:getWidth(), 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
   --Button Mute Audio
   newButton(love.graphics.getWidth() - sprites.button_soundOn:getWidth(), 15 + sprites.button_musicOn:getHeight(), sprites.button_soundOn:getWidth(), sprites.button_soundOn:getHeight(), sprites.button_soundOn, sprites.button_soundOff, 'SFXMute = not SFXMute', soundFX[1].sound, "n")
+  --Button Quit
+  newButton(-100, 15, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'love.event.quit(exitstatus)', soundFX[1].sound, "escape")
+  --Button Back
+  newButton(-80, love.graphics.getHeight() - sprites.button_up:getHeight() - 5, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Menu"', soundFX[1].sound, "escape")
 end
 
 
@@ -112,15 +121,23 @@ function love.update(dt)
     updateButton(buttons[1])
     updateButton(buttons[2])
     updateButton(buttons[3])
+    updateButton(buttons[4])
 
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
   elseif gameState == "Game" then
-    love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
-    playerUpdate(dt, players[1], balls)
-    playerUpdate(dt, players[2], balls)
-    for i = 1, 10 do
-      updateBall(dt, balls[i], players, balls)
+    updateButton(buttons[5])
+
+    if gameSubState == "Playing" then
+      love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
+      playerUpdate(dt, players[1], balls)
+      playerUpdate(dt, players[2], balls)
+      for i = 1, 10 do
+        updateBall(dt, balls[i], players, balls)
+      end
+      matchUpdate(dt, players, balls, matchs[table.getn(matchs)])
+    elseif gameSubState == "Paused" then
+      --TODO
     end
   end
 end
@@ -147,12 +164,14 @@ function love.draw()
     love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.setFont(buttonFont)
+    love.graphics.draw(buttons[4].currentSprite, buttons[4].x, buttons[4].y)
     love.graphics.draw(buttons[3].currentSprite, buttons[3].x, buttons[3].y)
     love.graphics.draw(buttons[2].currentSprite, buttons[2].x, buttons[2].y)
     love.graphics.draw(buttons[1].currentSprite, buttons[1].x, buttons[1].y)
     --Define a cor principal para preto antes de escrever JOGAR
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.printf("JOGAR", buttons[1].x, buttons[1].y + buttons[1].h/2 - buttonFont:getHeight()/2, buttons[1].w, "center")
+    love.graphics.printf("SAIR", buttons[4].x + 50, buttons[4].y + buttons[4].h/2 - buttonFont:getHeight()/2 - 3, buttons[1].w, "center")
 
     --Volta a cor principal para branco (Assim tudo fica bem)
     love.graphics.setColor(1, 1, 1, 1)
@@ -168,6 +187,36 @@ function love.draw()
     love.graphics.draw(sprites.tribune, 40, 350, math.rad(-90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
     love.graphics.draw(sprites.tribune, 860, 350, math.rad(90), 1.3, 1.3, sprites.tribune:getWidth()/2, sprites.tribune:getHeight()/2)
 
+    --Desenha o relogio do jogo
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.rectangle("fill", 10, 10, 160, 40 )
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(buttonFont)
+    love.graphics.printf("Time: " .. math.ceil(matchs[table.getn(matchs)].time), 10, 13, 160, "center")
+
+    --Desenha o placar de rounds do jogo
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.rectangle("fill", 730, 10, 160, 40 )
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(buttonFont)
+    love.graphics.printf("P1: " .. matchs[table.getn(matchs)].rounds1 .. " | P2: " .. matchs[table.getn(matchs)].rounds2, 730, 13, 160, "center")
+
+    love.graphics.draw(buttons[5].currentSprite, buttons[5].x, buttons[5].y) --Desenha o botão de Back
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.printf("UOLTAR", buttons[5].x + 40, buttons[5].y + buttons[5].h/2 - buttonFont:getHeight()/2 - 3, buttons[5].w, "center")
+    love.graphics.setColor(1, 1, 1, 1)
+
+    if matchs[table.getn(matchs)].winner ~= "" then
+      --Escreve na tela o nome do vencedor do jogo
+      love.graphics.setColor(0, 0, 0, 1)
+      love.graphics.rectangle("fill", 370, 310, 160, 80)
+      love.graphics.rectangle("fill", 205, 500, 490, 40)
+      love.graphics.setColor(1, 1, 1, 1)
+      love.graphics.setFont(buttonFont)
+      love.graphics.printf(matchs[table.getn(matchs)].winner .. " Venceu", 370, 318, 160, "center")
+      love.graphics.printf("Aperte [Enter] para jogar novamente", 205, 504, 490, "center")
+    end
+
     --Desenha todas as bolas criadas
     --love.graphics.draw(drawable, x, y, r, sx, sy, ox, oy, kx, ky)
     for i = 1, 10 do
@@ -182,6 +231,12 @@ function love.draw()
     love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
   end
+end
+
+function StartGame()
+  --Intancia uma nova partida
+  newMatch()
+  gameState = "Game"
 end
 
 function love.keypressed(key, scancode, isrepeat)
