@@ -154,7 +154,7 @@ function IfCollideBounce(ball, balls)
         --angleBetween(obj1, obj2)
         b.direction = angleBetween(b, ball)
         ball.direction = angleBetween(ball, b)
-        
+
       end
     end
   end
