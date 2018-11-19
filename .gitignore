@@ -33,6 +33,7 @@ luac.out
 
 # Executables
 *.exe
+!Kenney Wars\Builds\1.0\Installer\*.exe
 *.out
 *.app
 *.i*86
