@@ -26,6 +26,7 @@ function matchUpdate(dt, players, balls, match)
       match.rounds2 = match.rounds2 + 1
     end
 
+    -- Quando o tempo acaba verifica quem foi o vencedor
     if match.time <= 0 then
       if match.points1 > match.points2 then
         match.state = 1
@@ -35,6 +36,9 @@ function matchUpdate(dt, players, balls, match)
         match.rounds2 = match.rounds2 + 1
       else
         --Empate
+        match.state = 1
+        match.rounds1 = match.rounds1 + 1
+        match.rounds2 = match.rounds2 + 1
       end
     end
 
@@ -46,11 +50,11 @@ function matchUpdate(dt, players, balls, match)
     resetMatch(balls, players, match)
 
     --Verifica se alguem venceu o jogo
-    if match.rounds1 >= 2 then
+    if match.rounds1 >= 2 and match.rounds1 > match.rounds2 then
       --Player 1 venceu
       match.winner = "Player 1"
       match.state = 2
-    elseif match.rounds2 >= 2 then
+    elseif match.rounds2 >= 2 and match.rounds2 > match.rounds1 then
       --Player 2 venceu
       match.winner = "Player 2"
       match.state = 2
