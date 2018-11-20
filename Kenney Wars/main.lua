@@ -10,7 +10,7 @@ function love.load(arg)
     love.window.setMode(1500, 700, {resizable=true}) --Define o tamanho da tela para suportar o debug mode
     love.window.setTitle("♠ DEBUG MODE ♠") --Define o tirulo da janela onde o jogo acontece
   else
-    love.window.setMode(900, 700, {resizable=false}) --Define o tamanho da tela
+    love.window.setMode(900, 700, {resizable=true}) --Define o tamanho da tela
     love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   end
 
@@ -39,6 +39,9 @@ function love.load(arg)
   SFXMute = false
   musicVolume = 1
   musicMute = false
+
+  --Armazena a partida atual
+  currentMatch = ""
 
 
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
@@ -135,7 +138,7 @@ function love.update(dt)
       for i = 1, 10 do
         updateBall(dt, balls[i], players, balls)
       end
-      matchUpdate(dt, players, balls, matchs[table.getn(matchs)])
+      matchUpdate(dt, players, balls, currentMatch)
     elseif gameSubState == "Paused" then
       --TODO
     end
@@ -192,28 +195,28 @@ function love.draw()
     love.graphics.rectangle("fill", 10, 10, 160, 40 )
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(buttonFont)
-    love.graphics.printf("Time: " .. math.ceil(matchs[table.getn(matchs)].time), 10, 13, 160, "center")
+    love.graphics.printf("Time: " .. math.ceil(currentMatch.time), 10, 13, 160, "center")
 
     --Desenha o placar de rounds do jogo
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("fill", 730, 10, 160, 40 )
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(buttonFont)
-    love.graphics.printf("P1: " .. matchs[table.getn(matchs)].rounds1 .. " | P2: " .. matchs[table.getn(matchs)].rounds2, 730, 13, 160, "center")
+    love.graphics.printf("P1: " .. currentMatch.rounds1 .. " | P2: " .. currentMatch.rounds2, 730, 13, 160, "center")
 
     love.graphics.draw(buttons[5].currentSprite, buttons[5].x, buttons[5].y) --Desenha o botão de Back
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.printf("UOLTAR", buttons[5].x + 40, buttons[5].y + buttons[5].h/2 - buttonFont:getHeight()/2 - 3, buttons[5].w, "center")
     love.graphics.setColor(1, 1, 1, 1)
 
-    if matchs[table.getn(matchs)].winner ~= "" then
+    if currentMatch.winner ~= "" then
       --Escreve na tela o nome do vencedor do jogo
       love.graphics.setColor(0, 0, 0, 1)
       love.graphics.rectangle("fill", 370, 310, 160, 80)
       love.graphics.rectangle("fill", 205, 500, 490, 40)
       love.graphics.setColor(1, 1, 1, 1)
       love.graphics.setFont(buttonFont)
-      love.graphics.printf(matchs[table.getn(matchs)].winner .. " Venceu", 370, 318, 160, "center")
+      love.graphics.printf(currentMatch.winner .. " Venceu", 370, 318, 160, "center")
       love.graphics.printf("Aperte [Enter] para jogar novamente", 205, 504, 490, "center")
     end
 
@@ -236,6 +239,7 @@ end
 function StartGame()
   --Intancia uma nova partida
   newMatch()
+  currentMatch = matchs[table.getn(matchs)]
   gameState = "Game"
 end
 
