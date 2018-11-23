@@ -50,9 +50,13 @@ function love.load(arg)
   sprites.player1_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stand.png')
   sprites.player1_stuned = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stuned.png')
   sprites.player1_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_hold.png')
+  sprites.player1_medal = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_medal.png')
+  sprites.player1_icon = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_icon.png')
   sprites.player2_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_stand.png')
   sprites.player2_stuned = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_stuned.png')
   sprites.player2_hold = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_hold.png')
+  sprites.player2_medal = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_medal.png')
+  sprites.player2_icon = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Brown/manBrown_icon.png')
   sprites.button_up = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button00.png')
   sprites.button_down = love.graphics.newImage('Assets/Sprites/UI/PNG/green_button01.png')
   sprites.button_musicOn = love.graphics.newImage('Assets/Sprites/UI/gameicons/PNG/Black/1x/musicOn.png')
@@ -209,6 +213,21 @@ function love.draw()
     love.graphics.printf("UOLTAR", buttons[5].x + 40, buttons[5].y + buttons[5].h/2 - buttonFont:getHeight()/2 - 3, buttons[5].w, "center")
     love.graphics.setColor(1, 1, 1, 1)
 
+    if currentMatch.state == 1 then
+      --Escreve na tela o nome do vencedor do round
+      love.graphics.setColor(0, 0, 0, 1)
+      love.graphics.rectangle("fill", 370, 300, 160, 100)
+      love.graphics.rectangle("fill", 205, 500, 490, 40)
+      love.graphics.setColor(1, 1, 1, 1)
+      love.graphics.setFont(buttonFont)
+      if currentMatch.roundWinner ~= "Empate" then
+        love.graphics.printf(currentMatch.roundWinner .. " Venceu o round", 370, 308, 160, "center")
+      else
+        love.graphics.printf("\nEmpate", 370, 300, 160, "center")
+      end
+      love.graphics.printf("Aperte [Enter] para jogar novamente", 205, 504, 490, "center")
+    end
+
     if currentMatch.winner ~= "" then
       --Escreve na tela o nome do vencedor do jogo
       love.graphics.setColor(0, 0, 0, 1)
@@ -218,6 +237,7 @@ function love.draw()
       love.graphics.setFont(buttonFont)
       love.graphics.printf(currentMatch.winner .. " Venceu", 370, 318, 160, "center")
       love.graphics.printf("Aperte [Enter] para jogar novamente", 205, 504, 490, "center")
+      love.graphics.draw(currentMatch.spriteWinner, love.graphics.getWidth()/2, 200, nil, .5, .5, currentMatch.spriteWinner:getWidth()/2, currentMatch.spriteWinner:getHeight()/2)
     end
 
     --Desenha todas as bolas criadas

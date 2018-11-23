@@ -8,6 +8,8 @@ function newMatch()
   match.rounds2 = 0 -- Rounds won by player 2
   match.state = 0 -- 0 To playing 1 to time between rounds 2 match is over
   match.winner = "" -- Vencedor da partida
+  match.roundWinner = "" -- Vencedor do round
+  match.spriteWinner = "" --Armazena o sprite do vencedor da partida
 
   table.insert(matchs, match)
 end
@@ -20,9 +22,11 @@ function matchUpdate(dt, players, balls, match)
     -- Verifica se um dos players venceu por "Nocaute"
     if match.points1 == 10 then
       match.state = 1
+      match.roundWinner = "Player 1"
       match.rounds1 = match.rounds1 + 1
     elseif match.points2 == 10 then
       match.state = 1
+      match.roundWinner = "Player 2"
       match.rounds2 = match.rounds2 + 1
     end
 
@@ -30,13 +34,16 @@ function matchUpdate(dt, players, balls, match)
     if match.time <= 0 then
       if match.points1 > match.points2 then
         match.state = 1
+        match.roundWinner = "Player 1"
         match.rounds1 = match.rounds1 + 1
       elseif match.points1 < match.points2 then
         match.state = 1
+        match.roundWinner = "Player 2"
         match.rounds2 = match.rounds2 + 1
       else
         --Empate
         match.state = 1
+        match.roundWinner = "Empate"
         match.rounds1 = match.rounds1 + 1
         match.rounds2 = match.rounds2 + 1
       end
@@ -47,16 +54,20 @@ function matchUpdate(dt, players, balls, match)
 
   elseif match.state == 1 then
 
-    resetMatch(balls, players, match)
+    if keyPressed == "return" then -- Se apertar Enter o jogo reinicia
+      resetMatch(balls, players, match) -- Junto com as linhas de baixo reseta a partida
+    end
 
     --Verifica se alguem venceu o jogo
     if match.rounds1 >= 2 and match.rounds1 > match.rounds2 then
       --Player 1 venceu
       match.winner = "Player 1"
+      match.spriteWinner = sprites.player1_medal
       match.state = 2
     elseif match.rounds2 >= 2 and match.rounds2 > match.rounds1 then
       --Player 2 venceu
       match.winner = "Player 2"
+      match.spriteWinner = sprites.player2_medal
       match.state = 2
     end
 
@@ -75,9 +86,9 @@ function pointsUpdate(balls, match)
   match.points2 = 0
   for i,b in ipairs(balls) do
     if b.y == 45 then
-      match.points1 = match.points1 + 1
-    elseif b.y == 655 then
       match.points2 = match.points2 + 1
+    elseif b.y == 655 then
+      match.points1 = match.points1 + 1
     end
   end
 end
