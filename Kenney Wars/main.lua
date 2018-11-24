@@ -206,7 +206,10 @@ function love.draw()
     love.graphics.rectangle("fill", 730, 10, 160, 40 )
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(buttonFont)
-    love.graphics.printf("P1: " .. currentMatch.rounds1 .. " | P2: " .. currentMatch.rounds2, 730, 13, 160, "center")
+    love.graphics.print(currentMatch.rounds1 , 780, 13)
+    love.graphics.print(currentMatch.rounds2 , 855, 13)
+    love.graphics.draw(sprites.player1_icon, 740, 13, nil, .15, .15)
+    love.graphics.draw(sprites.player2_icon, 815, 13, nil, .15, .15)
 
     love.graphics.draw(buttons[5].currentSprite, buttons[5].x, buttons[5].y) --Desenha o botão de Back
     love.graphics.setColor(0, 0, 0, 1)
