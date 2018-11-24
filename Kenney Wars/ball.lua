@@ -154,11 +154,11 @@ function IfCollideBounce(ball, balls)
         --angleBetween(obj1, obj2)
         -- Verifica se um dos jogadores tem o dobro ou mais de pontos que o outro, se sim, da a vantagem de colisão para o outro player
         if currentMatch.points1 >= currentMatch.points2*2 then
-          b.direction = math.abs(angleBetween(b, ball))
-          ball.direction = math.abs(angleBetween(ball, b))
-        elseif currentMatch.points2 >= currentMatch.points1*2 then
           b.direction = -math.abs(angleBetween(b, ball))
           ball.direction = -math.abs(angleBetween(ball, b))
+        elseif currentMatch.points2 >= currentMatch.points1*2 then
+          b.direction = math.abs(angleBetween(b, ball))
+          ball.direction = math.abs(angleBetween(ball, b))
         else
           b.direction = angleBetween(b, ball)
           ball.direction = angleBetween(ball, b)
