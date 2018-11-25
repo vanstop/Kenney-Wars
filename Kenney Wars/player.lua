@@ -1,15 +1,17 @@
 
 function playerUpdate(dt, player, balls)
+
+  --Atualiza o personagem caso ele não esteja stunado
   if not player.stuned then
     updateControls(player.controlMode, player, balls)
     movePlayer(dt, player)
     rotatePlayer(player)
-  elseif player.timeToRecover <= 0 then
+  elseif player.timeToRecoverStun <= 0 then --Código que mantem o personagem stunado até que passe o tempo do stun
     player.stuned = false
-    player.timeToRecover = 1
+    player.timeToRecoverStun = 1
   else
     player.sprite = player.sprite_stuned
-    player.timeToRecover = player.timeToRecover - love.timer.getDelta()
+    player.timeToRecoverStun = player.timeToRecoverStun - love.timer.getDelta()
   end
 end
 
@@ -107,29 +109,10 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.right = false
   player.holdedBall = nil
   player.throw = false
+  player.timeToRecoverHold = 0.5
   player.stuned = false
-  player.timeToRecover = 1
+  player.timeToRecoverStun = 1
   player.sprite = player.sprite_stand
 
   table.insert(players, player)
-end
-
-function love.keypressed(key)
-  -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
-  if key == "kp1" then
-    if not players[1].isHolding then
-      hold(balls, players[1])
-    else
-      throw(players[1])
-    end
-  end
-
-  -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
-  if key == "space" then
-    if not players[2].isHolding then
-      hold(balls, players[2])
-    else
-      throw(players[2])
-    end
-  end
 end

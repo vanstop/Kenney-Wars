@@ -268,6 +268,24 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     keyPressed = key
+
+    -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
+    if key == "kp1" then
+      if not players[1].isHolding then
+        hold(balls, players[1])
+      elseif players[1].isHolding then
+        throw(players[1])
+      end
+    end
+
+    -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
+    if key == "space" then
+      if not players[2].isHolding then
+        hold(balls, players[2])
+      elseif players[2].isHolding then
+        throw(players[2])
+      end
+    end
 end
 
 function love.keyreleased(key, scancode, isrepeat)
