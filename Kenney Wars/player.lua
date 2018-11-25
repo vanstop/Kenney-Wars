@@ -18,23 +18,9 @@ function updateControls(controlMode, player, balls)
   if controlMode == "Player 1" or controlMode == "wasd" then
     player.left = love.keyboard.isDown("a")
     player.right = love.keyboard.isDown("d")
-    if love.keyboard.isDown("space") then
-      if not player.isHolding then
-        hold(balls, player)
-      end
-    elseif player.isHolding then
-      throw(player)
-    end
   elseif controlMode == "Player 2" or controlMode == "setas" then
     player.left = love.keyboard.isDown("left")
     player.right = love.keyboard.isDown("right")
-    if love.keyboard.isDown("kp1") then
-      if not player.isHolding then
-        hold(balls, player)
-      end
-    elseif player.isHolding then
-      throw(player)
-    end
   end
 end
 
@@ -126,4 +112,24 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.sprite = player.sprite_stand
 
   table.insert(players, player)
+end
+
+function love.keypressed(key)
+  -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
+  if key == "kp1" then
+    if not players[1].isHolding then
+      hold(balls, players[1])
+    else
+      throw(players[1])
+    end
+  end
+
+  -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
+  if key == "space" then
+    if not players[2].isHolding then
+      hold(balls, players[2])
+    else
+      throw(players[2])
+    end
+  end
 end
