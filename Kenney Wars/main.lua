@@ -4,7 +4,7 @@
 function love.load(arg)
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  debugMode = false
+  debugMode = true
 
   if debugMode then
     love.window.setMode(1500, 700, {resizable=true}) --Define o tamanho da tela para suportar o debug mode
@@ -33,6 +33,8 @@ function love.load(arg)
   sounds = {} --Armazena todos os soms do jogo
   soundFX = {} --Armazena todos os efeitos sonoros do jogo
   soundsBackground = {} --Armazena todos as musicas de background do jogo
+
+  joysticks = love.joystick.getJoysticks() --Armazena os controles que encontra conectados no computador
 
   --Define as variaveis de volume
   SFXVolume = 1
@@ -120,6 +122,7 @@ end
 
 
 function love.update(dt)
+  joysticks = love.joystick.getJoysticks()
   --Estão fora dos GameStates os updates que rodam durante todo o jogo
   updateAudios()
 
@@ -137,8 +140,8 @@ function love.update(dt)
 
     if gameSubState == "Playing" then
       love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
-      playerUpdate(dt, players[1], balls)
-      playerUpdate(dt, players[2], balls)
+      playerUpdate(dt, players[1], balls, joysticks)
+      playerUpdate(dt, players[2], balls, joysticks)
       for i = 1, 10 do
         updateBall(dt, balls[i], players, balls)
       end
@@ -261,6 +264,7 @@ end
 
 function StartGame()
   --Intancia uma nova partida
+  resetBalls(balls)
   newMatch()
   currentMatch = matchs[table.getn(matchs)]
   gameState = "Game"
@@ -290,4 +294,40 @@ end
 
 function love.keyreleased(key, scancode, isrepeat)
     keyPressed = ""
+end
+
+function love.joystickpressed(joystick,button)
+
+  -- ATENCÃO HARDCODE PARA JOGAR COM OS CONTROLES SERA SUBSTITUIDOS PELAS VARIAVEIS CORRETAS
+  if button == 8 then
+    keyPressed = "return"
+  end
+
+  if button == 7 then
+    keyPressed = "escape"
+  end
+
+  if button == 1 then
+    -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
+    if joystick == joysticks[2] then
+      if not players[1].isHolding then
+        hold(balls, players[1])
+      elseif players[1].isHolding then
+        throw(players[1])
+      end
+    end
+
+    -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
+    if joystick == joysticks[1] then
+      if not players[2].isHolding then
+        hold(balls, players[2])
+      elseif players[2].isHolding then
+        throw(players[2])
+      end
+    end
+  end
+end
+
+function love.joystickreleased(joystick, button)
+  keyPressed = ""
 end

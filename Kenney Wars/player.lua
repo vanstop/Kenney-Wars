@@ -1,9 +1,9 @@
 
-function playerUpdate(dt, player, balls)
+function playerUpdate(dt, player, balls, joysticks)
 
   --Atualiza o personagem caso ele não esteja stunado
   if not player.stuned then
-    updateControls(player.controlMode, player, balls)
+    updateControls(player.controlMode, player, balls, joysticks)
     movePlayer(dt, player)
     rotatePlayer(player)
   elseif player.timeToRecoverStun <= 0 then --Código que mantem o personagem stunado até que passe o tempo do stun
@@ -15,14 +15,14 @@ function playerUpdate(dt, player, balls)
   end
 end
 
-function updateControls(controlMode, player, balls)
+function updateControls(controlMode, player, balls, joysticks)
   --Define os controles deste player
   if controlMode == "Player 1" or controlMode == "wasd" then
-    player.left = love.keyboard.isDown("a")
-    player.right = love.keyboard.isDown("d")
+    player.left = love.keyboard.isDown("a") or joysticks[1]:isGamepadDown("dpleft")
+    player.right = love.keyboard.isDown("d") or joysticks[1]:isGamepadDown("dpright")
   elseif controlMode == "Player 2" or controlMode == "setas" then
-    player.left = love.keyboard.isDown("left")
-    player.right = love.keyboard.isDown("right")
+    player.left = love.keyboard.isDown("left") or joysticks[2]:isGamepadDown("dpleft")
+    player.right = love.keyboard.isDown("right") or joysticks[2]:isGamepadDown("dpright")
   end
 end
 
