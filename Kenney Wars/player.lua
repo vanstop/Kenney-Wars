@@ -7,10 +7,12 @@ function playerUpdate(dt, player, balls, joysticks)
     movePlayer(dt, player)
     rotatePlayer(player)
   elseif player.timeToRecoverStun <= 0 then --Código que mantem o personagem stunado até que passe o tempo do stun
+    player.emotion = "" --Reseta a emoção do player
     player.stuned = false
     player.timeToRecoverStun = 1
   else
     player.sprite = player.sprite_stuned
+    player.emotion = "Stuned"
     player.timeToRecoverStun = player.timeToRecoverStun - love.timer.getDelta()
   end
 end
@@ -113,6 +115,7 @@ function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand
   player.stuned = false
   player.timeToRecoverStun = 1
   player.sprite = player.sprite_stand
+  player.emotion = nil
 
   table.insert(players, player)
 end

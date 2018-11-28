@@ -44,8 +44,6 @@ function matchUpdate(dt, players, balls, match)
         --Empate
         match.state = 1
         match.roundWinner = "Empate"
-        match.rounds1 = match.rounds1 + 1
-        match.rounds2 = match.rounds2 + 1
       end
     end
 
@@ -63,11 +61,15 @@ function matchUpdate(dt, players, balls, match)
       --Player 1 venceu
       match.winner = "Player 1"
       match.spriteWinner = sprites.player1_medal
+      players[1].emotion = "Happy"
+      players[2].emotion = "Angry"
       match.state = 2
     elseif match.rounds2 >= 2 and match.rounds2 > match.rounds1 then
       --Player 2 venceu
       match.winner = "Player 2"
       match.spriteWinner = sprites.player2_medal
+      players[2].emotion = "Happy"
+      players[1].emotion = "Angry"
       match.state = 2
     end
 
@@ -109,7 +111,11 @@ end
 
 function resetPlayers(players) -- Reseta posição dos players
   players[1].y = 50
+  players[1].emotion = ""
+  players[1].stuned = false
   players[2].y = 650
+  players[2].emotion = ""
+  players[2].stuned = false
 end
 
 function resetMatch(balls, players, match) -- Prepara a partida para um novo round

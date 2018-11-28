@@ -4,13 +4,13 @@
 function love.load(arg)
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
-  debugMode = true
+  debugMode = false
 
   if debugMode then
     love.window.setMode(1500, 700, {resizable=true}) --Define o tamanho da tela para suportar o debug mode
     love.window.setTitle("♠ DEBUG MODE ♠") --Define o tirulo da janela onde o jogo acontece
   else
-    love.window.setMode(900, 700, {resizable=true}) --Define o tamanho da tela
+    love.window.setMode(900, 700, {resizable=false}) --Define o tamanho da tela
     love.window.setTitle("♥ Kenney Wars ♥") --Define o tirulo da janela onde o jogo acontece
   end
 
@@ -70,6 +70,10 @@ function love.load(arg)
   sprites.ball_yellow = love.graphics.newImage('Assets/Sprites/Game/PNG/Balls/Yellow/ballYellow_04.png')
   sprites.board_blue = love.graphics.newImage('Assets/Sprites/Game/PNG/KenneyWarsBoard.png')
   sprites.tribune = love.graphics.newImage('Assets/Sprites/Game/PNG/Objects/tribune_full.png')
+  sprites.emote_Stuned = love.graphics.newImage('Assets/Sprites/UI/emote_stars.png')
+  sprites.emote_Happy = love.graphics.newImage('Assets/Sprites/UI/emote_faceHappy.png')
+  sprites.emote_Angry = love.graphics.newImage('Assets/Sprites/UI/emote_faceAngry.png')
+
   --Configura a imagem para poder ser repetida
   sprites.background_menu:setWrap("repeat", "repeat")
   sprites.background_quad = love.graphics.newQuad(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), sprites.background_menu:getWidth(), sprites.background_menu:getHeight())
@@ -140,8 +144,11 @@ function love.update(dt)
 
     if gameSubState == "Playing" then
       love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
-      playerUpdate(dt, players[1], balls, joysticks)
-      playerUpdate(dt, players[2], balls, joysticks)
+      if currentMatch.state < 1 then --Os personagens só se movem se o jogo estiver rolando
+        playerUpdate(dt, players[1], balls, joysticks)
+        playerUpdate(dt, players[2], balls, joysticks)
+      end
+
       for i = 1, 10 do
         updateBall(dt, balls[i], players, balls)
       end
@@ -259,20 +266,43 @@ function love.draw()
 
     love.graphics.draw(players[1].sprite, players[1].x, players[1].y, players[1].rotation, players[1].s, players[1].s, players[1].w/2, players[1].h/2)
     love.graphics.draw(players[2].sprite, players[2].x, players[2].y, players[2].rotation, players[2].s, players[2].s, players[2].w/2, players[2].h/2)
+
+    --HARDCODE
+    for i = 1, 2 do
+      if players[i].emotion ~= "" then
+        if players[2].emotion == "Stuned" then
+          love.graphics.draw(sprites.emote_Stuned, players[2].x + players[2].w/2, players[2].y - sprites.emote_Stuned:getHeight()/2, nil, 1, 1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        elseif players[2].emotion == "Happy" then
+          love.graphics.draw(sprites.emote_Happy, players[2].x + players[2].w/2, players[2].y - sprites.emote_Stuned:getHeight()/2, nil, 1, 1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        elseif players[2].emotion == "Angry" then
+          love.graphics.draw(sprites.emote_Angry, players[2].x + players[2].w/2, players[2].y - sprites.emote_Stuned:getHeight()/2, nil, 1, 1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        end
+
+        if players[1].emotion == "Stuned" then
+          love.graphics.draw(sprites.emote_Stuned, players[1].x + players[1].w/2, players[1].y + sprites.emote_Stuned:getHeight()/2, nil, 1, -1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        elseif players[1].emotion == "Happy" then
+          love.graphics.draw(sprites.emote_Happy, players[1].x + players[1].w/2, players[1].y + sprites.emote_Stuned:getHeight()/2, nil, 1, -1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        elseif players[1].emotion == "Angry" then
+          love.graphics.draw(sprites.emote_Angry, players[1].x + players[1].w/2, players[1].y + sprites.emote_Stuned:getHeight()/2, nil, 1, -1, sprites.emote_Stuned:getWidth(), sprites.emote_Stuned:getHeight())
+        end
+      end
+    end
   end
 end
 
 function StartGame()
   --Intancia uma nova partida
   resetBalls(balls)
+  resetPlayers(players)
   newMatch()
   currentMatch = matchs[table.getn(matchs)]
   gameState = "Game"
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    keyPressed = key
+  keyPressed = key
 
+  if gameState == "Game" and not players[1].stuned and not players[2].stuned then
     -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
     if key == "kp1" then
       if not players[1].isHolding then
@@ -290,6 +320,7 @@ function love.keypressed(key, scancode, isrepeat)
         throw(players[2])
       end
     end
+  end
 end
 
 function love.keyreleased(key, scancode, isrepeat)
@@ -307,22 +338,24 @@ function love.joystickpressed(joystick,button)
     keyPressed = "escape"
   end
 
-  if button == 1 then
-    -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
-    if joystick == joysticks[2] then
-      if not players[1].isHolding then
-        hold(balls, players[1])
-      elseif players[1].isHolding then
-        throw(players[1])
+  if gameState == "Game" and not players[1].stuned and not players[2].stuned then
+    if button == 1 then
+      -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
+      if joystick == joysticks[2] then
+        if not players[1].isHolding then
+          hold(balls, players[1])
+        elseif players[1].isHolding then
+          throw(players[1])
+        end
       end
-    end
 
-    -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
-    if joystick == joysticks[1] then
-      if not players[2].isHolding then
-        hold(balls, players[2])
-      elseif players[2].isHolding then
-        throw(players[2])
+      -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
+      if joystick == joysticks[1] then
+        if not players[2].isHolding then
+          hold(balls, players[2])
+        elseif players[2].isHolding then
+          throw(players[2])
+        end
       end
     end
   end
