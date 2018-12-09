@@ -1,6 +1,11 @@
 --Criado por Gabriel de Oliveira Belarmino
 --Agradecimento especial a https://www.kenney.nl/assets pelos assets maravilhosos
 
+
+-- Informações uteis
+  --Player 1 refere-se ao personagem na parte superior da tela o de camisa azul.
+  --Player 2 refere-se ao personagem na parte inferior da tela o de camisa marrom.
+
 function love.load(arg)
   love.graphics.setBackgroundColor(0, 0, 0, 1) --Define a cor do plano de fundo (chão)
 
@@ -45,9 +50,18 @@ function love.load(arg)
   --Armazena a partida atual
   currentMatch = ""
 
-
+  -- Importa os arquivos de audio para o jogo
   sounds.click = love.audio.newSource('Assets/Sounds/SoundFX/Audio/click3.ogg', "static")
-  sounds.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/412343__michorvath__sequence-8-bit-music-loop.wav', "stream")
+  sounds.menu = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/360608__sirkoto51__loading.wav', "stream")
+  sounds.game = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/378110__sirkoto51__retro-puzzle-music-loop.wav', "stream")
+  sounds.startGame = love.audio.newSource('Assets/Sounds/SoundFX/Audio/434795__aditwayer__race-countdown.wav', "static")
+  sounds.endGame = love.audio.newSource('Assets/Sounds/SoundFX/Audio/182351__kesu__alarm-clock-beep.wav', "static")
+  sounds.holdBall = love.audio.newSource('Assets/Sounds/SoundFX/Audio/243621__octodisk__woop-sound.mp3', "static")
+  sounds.throwBall = love.audio.newSource('Assets/Sounds/SoundFX/Audio/60007__qubodup__swipe-whoosh.wav', "static")
+  sounds.ballsColliding = love.audio.newSource('Assets/Sounds/SoundFX/Audio/416886__whitelinefever__hammer-hitting-a-head.wav', "static")
+  sounds.stun = love.audio.newSource('Assets/Sounds/SoundFX/Audio/390462__huminaatio__punch-in-the-face.wav', "static")
+  sounds.win = love.audio.newSource('Assets/Sounds/SoundBackground/Musics/352283__sirkoto51__success-loop-1.wav', "stream")
+
   --Inicializa os sprites do jogo
   sprites.player1_stand = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stand.png')
   sprites.player1_stuned = love.graphics.newImage('Assets/Sprites/Game/PNG/Man Blue/manBlue_stuned.png')
@@ -94,7 +108,21 @@ function love.load(arg)
   require('myGeneralLibrary')
 
   newSFX(sounds.click)
+  newSFX(sounds.startGame)
+  newSFX(sounds.endGame)
+  newSFX(sounds.stun)
+  newSFX(sounds.ballsColliding)
+  newSFX(sounds.holdBall)
+  newSFX(sounds.throwBall)
+
   newMusic(sounds.menu)
+  newMusic(sounds.game)
+  newMusic(sounds.win)
+
+  --Define quais musicas estarão em loop
+  soundsBackground[1].sound:setLooping(true)
+  soundsBackground[2].sound:setLooping(true)
+  soundsBackground[3].sound:setLooping(true)
 
   --Instancia os players
   --newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand)
@@ -131,15 +159,25 @@ function love.update(dt)
   updateAudios()
 
   if gameState == "Menu" then
-    --TO DO coisas que são atualizadas durante o menu
+
+    soundFX[2].sound:stop()
+    soundFX[3].sound:stop()
+
+    --Coisas que são atualizadas durante o menu
     updateButton(buttons[1])
     updateButton(buttons[2])
     updateButton(buttons[3])
     updateButton(buttons[4])
 
+    soundsBackground[3].sound:stop()
+    soundsBackground[2].sound:stop()
+    soundsBackground[1].sound:play()
+
   elseif gameState == "HighScore" then
     --TO DO coisas que são atualizadas durante o highscore
   elseif gameState == "Game" then
+    soundsBackground[1].sound:stop()
+
     updateButton(buttons[5])
 
     if gameSubState == "Playing" then
@@ -164,8 +202,6 @@ function love.draw()
   if gameState == "Menu" then
     --Desenha o plano de fundo
     love.graphics.draw(sprites.background_menu, sprites.background_quad, 0, 0)
-    --Inicia a musica de background
-    soundsBackground[1].sound:play()
 
     love.graphics.setFont(titleFont)
     love.graphics.setColor(0, 0, 0, 1)
@@ -176,8 +212,9 @@ function love.draw()
     --Prepara a font para escrever os creditos
     love.graphics.setColor(math.random(0, 1), math.random(0, 1), math.random(0, 1), 1)
     love.graphics.setFont(gameFont)
-    love.graphics.printf("Created by: Gabriel de Oliveira Belarmino", 0, love.graphics.getHeight() - 50, love.graphics.getWidth(), "center")
-    love.graphics.printf("Special Thanks: https://www.kenney.nl/assets", 0, love.graphics.getHeight() - 25, love.graphics.getWidth(), "center")
+    love.graphics.printf("Created by: Gabriel de Oliveira Belarmino", 0, love.graphics.getHeight() - 75, love.graphics.getWidth(), "center")
+    love.graphics.printf("Special Thanks: https://www.kenney.nl/assets", 0, love.graphics.getHeight() - 50, love.graphics.getWidth(), "center")
+    love.graphics.printf("Musics by: https://freesound.org/people/Sirkoto51", 0, love.graphics.getHeight() - 25, love.graphics.getWidth(), "center")
     love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.setFont(buttonFont)
@@ -297,6 +334,8 @@ function StartGame()
   newMatch()
   currentMatch = matchs[table.getn(matchs)]
   gameState = "Game"
+  soundFX[2].sound:stop()
+  soundFX[2].sound:play()
 end
 
 function love.keypressed(key, scancode, isrepeat)

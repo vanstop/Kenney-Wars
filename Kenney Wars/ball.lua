@@ -32,6 +32,7 @@ function updateBall(dt, ball, players, balls)
     for i, p in ipairs(players) do
       if distanceBetween(p.x, p.y, ball.x, ball.y) < 35 then
         p.stuned = true
+        soundFX[4].sound:play()
       end
     end
   else
@@ -150,6 +151,7 @@ function IfCollideBounce(ball, balls)
   for i, b in ipairs(balls) do
     if distanceBetween(ball.x, ball.y, b.x, b.y) <= b.w then --Verifica se colidiu
       if b ~= ball and b.isMoving then --Verifica se a outra bola tambem esta se movendo
+        soundFX[5].sound:play()
 
         --angleBetween(obj1, obj2)
         -- Verifica se um dos jogadores tem o dobro ou mais de pontos que o outro, se sim, da a vantagem de colisão para o outro player

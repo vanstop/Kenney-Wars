@@ -17,6 +17,7 @@ end
 
 function matchUpdate(dt, players, balls, match)
   if match.state == 0 then
+    soundsBackground[2].sound:play()
     pointsUpdate(balls, match) -- Atualiza a pontuação
 
     -- Verifica se um dos players venceu por "Nocaute"
@@ -71,6 +72,9 @@ function matchUpdate(dt, players, balls, match)
       players[2].emotion = "Happy"
       players[1].emotion = "Angry"
       match.state = 2
+      soundsBackground[2].sound:stop()
+      soundFX[3].sound:play()
+      soundsBackground[3].sound:play()
     end
 
   elseif match.state == 2 then
@@ -124,4 +128,7 @@ function resetMatch(balls, players, match) -- Prepara a partida para um novo rou
   match.winner = ""
   match.time = 60
   match.state = 0
+  soundsBackground[3].sound:stop()
+  soundFX[2].sound:stop()
+  soundFX[2].sound:play()
 end

@@ -19,10 +19,10 @@ end
 
 function updateControls(controlMode, player, balls, joysticks)
   --Define os controles deste player
-  if controlMode == "Player 1" or controlMode == "wasd" then
+  if controlMode == "Player 2" or controlMode == "wasd" then
     player.left = love.keyboard.isDown("a") or joysticks[1]:isGamepadDown("dpleft")
     player.right = love.keyboard.isDown("d") or joysticks[1]:isGamepadDown("dpright")
-  elseif controlMode == "Player 2" or controlMode == "setas" then
+  elseif controlMode == "Player 1" or controlMode == "setas" then
     player.left = love.keyboard.isDown("left") or joysticks[2]:isGamepadDown("dpleft")
     player.right = love.keyboard.isDown("right") or joysticks[2]:isGamepadDown("dpright")
   end
@@ -78,6 +78,7 @@ function hold(balls, player)
         player.holdedBall = b
         player.isHolding = true
         player.throw = false
+        soundFX[6].sound:play()
         break
       end
     end
@@ -88,6 +89,7 @@ function throw(player)
   player.throw = true
   player.holdedBall = nil
   player.isHolding = false
+  soundFX[7].sound:play()
 end
 
 function newPlayer(x, y, w, h, s, d, speed, controlMode, spriteHold, spriteStand, spriteStuned)
