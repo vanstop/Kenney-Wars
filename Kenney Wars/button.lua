@@ -1,4 +1,4 @@
-function newButton(x, y, w, h, spriteUp, spriteDown, code, sound, keyboardEquivalent)
+function NewButton(x, y, w, h, spriteUp, spriteDown, code, sound, keyboardEquivalent)
   local button = {}
   button.x = x
   button.y = y
@@ -19,7 +19,7 @@ function newButton(x, y, w, h, spriteUp, spriteDown, code, sound, keyboardEquiva
   table.insert(buttons, button)
 end
 
-function updateButton(button)
+function UpdateButton(button)
   --Verifica se o mouse esta em cima do botão
   if isInside(love.mouse.getX(), love.mouse.getY(), 1, 1, button.x, button.y, button.w, button.h) or keyPressed == button.keyboardEquivalent or isActive then
     button.currentSprite = button.sprite_down

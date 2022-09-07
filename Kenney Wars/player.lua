@@ -1,11 +1,11 @@
 
-function playerUpdate(dt, player, balls, joysticks)
+function PlayerUpdate(dt, player, balls, joysticks)
 
   --Atualiza o personagem caso ele não esteja stunado
   if not player.stuned then
-    updateControls(player.controlMode, player, balls, joysticks)
-    movePlayer(dt, player)
-    rotatePlayer(player)
+    UpdateControls(player.controlMode, player, balls, joysticks)
+    MovePlayer(dt, player)
+    RotatePlayer(player)
   elseif player.timeToRecoverStun <= 0 then --Código que mantem o personagem stunado até que passe o tempo do stun
     player.emotion = "" --Reseta a emoção do player
     player.stuned = false
@@ -17,18 +17,18 @@ function playerUpdate(dt, player, balls, joysticks)
   end
 end
 
-function updateControls(controlMode, player, balls, joysticks)
+function UpdateControls(controlMode, player, balls, joysticks)
   --Define os controles deste player
   if controlMode == "Player 2" or controlMode == "wasd" then
-    player.left = love.keyboard.isDown("a") or joysticks[1]:isGamepadDown("dpleft")
-    player.right = love.keyboard.isDown("d") or joysticks[1]:isGamepadDown("dpright")
+    player.left = love.keyboard.isDown("a") or (#joysticks > 1 and joysticks[1]:isGamepadDown("dpleft"))
+    player.right = love.keyboard.isDown("d") or (#joysticks > 1 and joysticks[1]:isGamepadDown("dpright"))
   elseif controlMode == "Player 1" or controlMode == "setas" then
-    player.left = love.keyboard.isDown("left") or joysticks[2]:isGamepadDown("dpleft")
-    player.right = love.keyboard.isDown("right") or joysticks[2]:isGamepadDown("dpright")
+    player.left = love.keyboard.isDown("left") or (#joysticks > 2 and joysticks[2]:isGamepadDown("dpleft"))
+    player.right = love.keyboard.isDown("right") or (#joysticks > 2 and joysticks[2]:isGamepadDown("dpright"))
   end
 end
 
-function movePlayer(dt, player)
+function MovePlayer(dt, player)
   --controla a movimentação do player
   if not player.right and not player.left then
     --rotaciona o personagem para frente
@@ -55,7 +55,7 @@ function movePlayer(dt, player)
   end
 end
 
-function rotatePlayer(player)
+function RotatePlayer(player)
   --Use sprites that look to the right
   if player.direction == "up" then
     player.rotation = 4.71239
@@ -68,7 +68,7 @@ function rotatePlayer(player)
   end
 end
 
-function hold(balls, player)
+function Hold(balls, player)
   --TO DO verifica se esta perto de uma bola então a segura
   for i,b in ipairs(balls) do
     if not b.isMoving and not b.isHold then
@@ -85,7 +85,7 @@ function hold(balls, player)
   end
 end
 
-function throw(player)
+function Throw(player)
   player.throw = true
   player.holdedBall = nil
   player.isHolding = false

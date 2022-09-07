@@ -141,15 +141,15 @@ function love.load(arg)
   --Intancia um novo botão
   --newButton(x, y, w, h, s, spriteUp, spriteDown, code)
   --Button Play
-  newButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'StartGame()', soundFX[1].sound, "return")
+  NewButton(love.graphics.getWidth()/2 - sprites.button_up:getWidth()/2, 500, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'StartGame()', soundFX[1].sound, "return")
   --Button Mute Music
-  newButton(love.graphics.getWidth() - sprites.button_musicOn:getWidth(), 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
+  NewButton(love.graphics.getWidth() - sprites.button_musicOn:getWidth(), 15, sprites.button_musicOn:getWidth(), sprites.button_musicOn:getHeight(), sprites.button_musicOn, sprites.button_musicOff, 'musicMute = not musicMute', soundFX[1].sound, "m")
   --Button Mute Audio
-  newButton(love.graphics.getWidth() - sprites.button_soundOn:getWidth(), 15 + sprites.button_musicOn:getHeight(), sprites.button_soundOn:getWidth(), sprites.button_soundOn:getHeight(), sprites.button_soundOn, sprites.button_soundOff, 'SFXMute = not SFXMute', soundFX[1].sound, "n")
+  NewButton(love.graphics.getWidth() - sprites.button_soundOn:getWidth(), 15 + sprites.button_musicOn:getHeight(), sprites.button_soundOn:getWidth(), sprites.button_soundOn:getHeight(), sprites.button_soundOn, sprites.button_soundOff, 'SFXMute = not SFXMute', soundFX[1].sound, "n")
   --Button Quit
-  newButton(-100, 15, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'love.event.quit(exitstatus)', soundFX[1].sound, "escape")
+  NewButton(-100, 15, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'love.event.quit(exitstatus)', soundFX[1].sound, "escape")
   --Button Back
-  newButton(-80, love.graphics.getHeight() - sprites.button_up:getHeight() - 5, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Menu"', soundFX[1].sound, "escape")
+  NewButton(-80, love.graphics.getHeight() - sprites.button_up:getHeight() - 5, sprites.button_up:getWidth(), sprites.button_up:getHeight(), sprites.button_up, sprites.button_down, 'gameState = "Menu"', soundFX[1].sound, "escape")
 end
 
 
@@ -164,10 +164,10 @@ function love.update(dt)
     soundFX[3].sound:stop()
 
     --Coisas que são atualizadas durante o menu
-    updateButton(buttons[1])
-    updateButton(buttons[2])
-    updateButton(buttons[3])
-    updateButton(buttons[4])
+    UpdateButton(buttons[1])
+    UpdateButton(buttons[2])
+    UpdateButton(buttons[3])
+    UpdateButton(buttons[4])
 
     soundsBackground[3].sound:stop()
     soundsBackground[2].sound:stop()
@@ -178,13 +178,13 @@ function love.update(dt)
   elseif gameState == "Game" then
     soundsBackground[1].sound:stop()
 
-    updateButton(buttons[5])
+    UpdateButton(buttons[5])
 
     if gameSubState == "Playing" then
       love.graphics.setBackgroundColor(0.65, 0.78, 0.78, 1) --Define a cor do plano de fundo (chão)
       if currentMatch.state < 1 then --Os personagens só se movem se o jogo estiver rolando
-        playerUpdate(dt, players[1], balls, joysticks)
-        playerUpdate(dt, players[2], balls, joysticks)
+        PlayerUpdate(dt, players[1], balls, joysticks)
+        PlayerUpdate(dt, players[2], balls, joysticks)
       end
 
       for i = 1, 10 do
@@ -345,18 +345,18 @@ function love.keypressed(key, scancode, isrepeat)
     -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
     if key == "kp1" then
       if not players[1].isHolding then
-        hold(balls, players[1])
+        Hold(balls, players[1])
       elseif players[1].isHolding then
-        throw(players[1])
+        Throw(players[1])
       end
     end
 
     -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
     if key == "space" then
       if not players[2].isHolding then
-        hold(balls, players[2])
+        Hold(balls, players[2])
       elseif players[2].isHolding then
-        throw(players[2])
+        Throw(players[2])
       end
     end
   end
@@ -382,18 +382,18 @@ function love.joystickpressed(joystick,button)
       -- Verifica se o player 1 apertou o botão para pegar ou soltar a bola
       if joystick == joysticks[2] then
         if not players[1].isHolding then
-          hold(balls, players[1])
+          Hold(balls, players[1])
         elseif players[1].isHolding then
-          throw(players[1])
+          Throw(players[1])
         end
       end
 
       -- Verifica se o player 2 apertou o botão para pegar ou soltar a bola
       if joystick == joysticks[1] then
         if not players[2].isHolding then
-          hold(balls, players[2])
+          Hold(balls, players[2])
         elseif players[2].isHolding then
-          throw(players[2])
+          Throw(players[2])
         end
       end
     end
