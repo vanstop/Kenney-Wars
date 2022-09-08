@@ -23,7 +23,7 @@
 
 ## 🎳 O que é Kenney Wars
 
-Um jogo multiplayer que se encaixa como um party game (jogo para festas), onde o objetivo é jogar todas as bolas do seu campo para o do adversário, vence quem colocar as 10 bolas no campo do inimigo primeiro, ou quem possuir menos bolas em seu campo quando acabar o tempo.
+Um jogo multiplayer que se encaixa como um party game, onde o objetivo é jogar todas as bolas do seu campo para o do adversário, vence quem colocar as 10 bolas no campo do inimigo primeiro, ou quem possuir menos bolas em seu campo quando acabar o tempo.
 
 ## 🎮 Controles
 
@@ -33,11 +33,11 @@ Jogador 1: A, D e SPACE (Teclado) ou D-PAD e B (Controle 1)
 
 Jogador 2: Setas e NumPad1 (Teclado) ou D-PAD e B (Controle 2)
 
-## 🛠 Com o que esta sendo feito
+## 🛠 Com o que foi feito
 
 Utilizando a linguagem: <a href="https://www.lua.org">LUA</a>
 
-Utilizando o motor grafico: <a href="https://love2d.org">LOVE2D</a>
+Utilizando o framework: <a href="https://love2d.org">LOVE2D</a>
 
 Utilizando os assets de: <a href="https://www.kenney.nl/assets">Kenney Assets</a>
 
