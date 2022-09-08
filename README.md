@@ -45,4 +45,5 @@ Utilizando a licença: <a href="https://www.gnu.org/licenses/gpl-3.0.pt-br.html"
 
 ## 🕹 Baixe e jogue
 
-https://agirgames.itch.io/kenney-wars
+<a href="https://github.com/vanstop/Kenney-Wars/releases/download/Final_Release/KenneyWars.rar"><img src="https://i.imgur.com/PIwhEHP.png" width=150px></img></a>
+<a href="https://agirgames.itch.io/kenney-wars"><img src="https://i.imgur.com/m3Coa7Q.png" width=150px></img></a>
