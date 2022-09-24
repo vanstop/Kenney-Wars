@@ -21,29 +21,29 @@
   </tr>
 </table>
 
-## 🎳 O que é Kenney Wars
+## 🎳 What is Kenney Wars
 
-Um jogo multiplayer que se encaixa como um party game, onde o objetivo é jogar todas as bolas do seu campo para o do adversário, vence quem colocar as 10 bolas no campo do inimigo primeiro, ou quem possuir menos bolas em seu campo quando acabar o tempo.
+A multiplayer party game, the objective is to throw all the balls from your field to the opponent's, wins whoever puts 10 balls in the enemy's field first, or whoever has the fewest balls in their field when time runs out.
 
-## 🎮 Controles
+## 🎮 Controls
 
-Você pode jogar utilizando controles ou o teclado:
+You can play using controls or keyboard:
 
-Jogador 1: A, D e SPACE (Teclado) ou D-PAD e B (Controle 1)
+Player 1: A, D e SPACE (Keyboard) or D-PAD e B (Controller 1)
 
-Jogador 2: Setas e NumPad1 (Teclado) ou D-PAD e B (Controle 2)
+Player 2: Arrows e NumPad1 (Keyboard) or D-PAD e B (Controller 2)
 
-## 🛠 Com o que foi feito
+## 🛠 Was done using
 
-Utilizando a linguagem: <a href="https://www.lua.org">LUA</a>
+The language: <a href="https://www.lua.org">LUA</a>
 
-Utilizando o framework: <a href="https://love2d.org">LOVE2D</a>
+The framework: <a href="https://love2d.org">LOVE2D</a>
 
-Utilizando os assets de: <a href="https://www.kenney.nl/assets">Kenney Assets</a>
+The assets from: <a href="https://www.kenney.nl/assets">Kenney Assets</a>
 
-Utilizando a licença: <a href="https://www.gnu.org/licenses/gpl-3.0.pt-br.html">GNU General Public License v3.0</a>
+The license: <a href="https://www.gnu.org/licenses/gpl-3.0.pt-br.html">GNU General Public License v3.0</a>
 
-## 🕹 Baixe e jogue
+## 🕹 Download and play
 
 <a href="https://github.com/vanstop/Kenney-Wars/releases/download/Final_Release/KenneyWars.rar"><img src="https://i.imgur.com/PIwhEHP.png" width=150px></img></a>
 <a href="https://agirgames.itch.io/kenney-wars"><img src="https://i.imgur.com/m3Coa7Q.png" width=150px></img></a>
